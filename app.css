@@ -1,0 +1,48 @@
+@charset "utf-8";
+
+body {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  margin: 0;
+  min-height: 100vh;
+  background: #313638;
+  font-family: -apple-system, 'Segoe UI', 'DejaVu Sans', system-ui, sans-serif;
+}
+
+/* Board */
+.b {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  justify-content: space-between;
+  width: 90vmin;
+  height: 90vmin;
+}
+
+/* Cell */
+.c {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  width: 24.75%;
+  height: 24.75%;
+}
+
+/* Light */
+.c {
+  background: #d49577;
+  box-shadow: 0 1vmin #845750, 0 1vmin 0 0.3333vmin #00000040;
+  border-radius: 8.3333%;
+}
+
+/* Dark */
+.c:nth-child(8n+2),
+.c:nth-child(8n+4),
+.c:nth-child(8n+5),
+.c:nth-child(8n+7) {
+  background: #9f705a;
+  box-shadow: 0 1vmin #633b3f, 0 1vmin 0 0.3333vmin #00000040;
+}
