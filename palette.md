@@ -1,5 +1,4 @@
-Palette
----
+# Palette
 
 CAM02 (Ch):
 
@@ -45,8 +44,7 @@ OKLCH:
 #f4f4f4
 ```
 
-Board
----
+## Board
 
 ```
 #d49577
@@ -55,8 +53,7 @@ Board
 #633b3f
 ```
 
-Background
----
+## Background
 
 ```
 #313638
