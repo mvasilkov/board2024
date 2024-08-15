@@ -14,12 +14,14 @@ export const knightSVG = (color: string, outline: string, highlight: string, low
 
 def replace_colors(svg: str) -> str:
     result = (
-        svg.replace('fill="#e9e9e9"', 'fill="${color}"')
+        svg.replace(' width="50mm"', '')
+        .replace(' height="50mm"', '')
+        .replace('fill="#e9e9e9"', 'fill="${color}"')
         .replace('stroke="#2a2a2a"', 'stroke="${outline}"')
-        .replace('fill="#fff"', 'fill="${highlight}"')
-        .replace('opacity=".2" stroke="#000"', 'fill="${lowlight}" stroke="${lowlight}"')
-        .replace('opacity=".2"', 'fill="${lowlight}"')
-        .replace('opacity=".5"', 'fill="${lowlight2}"')
+        .replace('fill="#fff"', 'fill="${highlight}" style="mix-blend-mode:lighten"')
+        .replace('opacity=".2" stroke="#000"', 'fill="${lowlight}" stroke="${lowlight}" style="mix-blend-mode:darken"')
+        .replace('opacity=".2"', 'fill="${lowlight}" style="mix-blend-mode:darken"')
+        .replace('opacity=".5"', 'fill="${lowlight2}" style="mix-blend-mode:darken"')
     )
     return result
 
