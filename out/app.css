@@ -46,3 +46,13 @@ body {
   background: #9f705a;
   box-shadow: 0 1vmin #633b3f, 0 1vmin 0 0.3333vmin #00000040;
 }
+
+/* Piece */
+.p {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  width: 66.6666%;
+  height: 66.6666%;
+}

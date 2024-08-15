@@ -7,7 +7,7 @@ ts_start = '''
 '''.lstrip()
 
 ts_function = '''
-const knightSVG = (color: string, outline: string, highlight: string, lowlight: string, lowlight2: string) =>
+export const knightSVG = (color: string, outline: string, highlight: string, lowlight: string, lowlight2: string) =>
     `%s`
 '''.lstrip()
 
@@ -34,7 +34,7 @@ def load_pieces():
     knight_fn = ts_function % replace_colors(knight_svg)
 
     outfile = parent_dir / 'typescript' / 'pieces.ts'
-    outfile.write_text(f'{ts_start}\n{knight_fn}', encoding='utf-8')
+    outfile.write_text(f'{ts_start}\n{knight_fn}', encoding='utf-8', newline='\n')
 
 
 if __name__ == '__main__':
