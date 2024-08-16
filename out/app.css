@@ -53,6 +53,6 @@ body {
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
-  width: 66.6666%;
-  height: 66.6666%;
+  width: 16vmin;
+  height: 16vmin;
 }

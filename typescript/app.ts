@@ -1,5 +1,5 @@
 'use strict'
 
-import { renderBoard } from './rendering.js'
+import { renderBoard } from './debug.js'
 
 renderBoard()
