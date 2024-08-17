@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "natlib": "latest"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}
