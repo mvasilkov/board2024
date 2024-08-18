@@ -85,4 +85,11 @@ export const getMoves = (x0: number, y0: number): IVec2[] => {
 }
 
 export const getMovesTable = (x0: number, y0: number): Board => {
+    const moves = createBoard()
+
+    getMoves(x0, y0).forEach(({ x, y }) => {
+        moves[y]![x] = ShortBool.TRUE
+    })
+
+    return moves
 }

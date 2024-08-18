@@ -51,7 +51,7 @@ body {
 .p {
   display: flex;
   flex-wrap: wrap;
-  align-content: center;
+  align-content: end;
   justify-content: center;
   width: 19vmin;
   height: 19vmin;
@@ -65,5 +65,9 @@ svg {
 
 /* Value */
 .n {
-  z-index: 1;
+  -webkit-backdrop-filter: blur(0.5vmin);
+  backdrop-filter: blur(0.5vmin);
+  border-radius: 1.6vmin;
+  padding: 0 1.4vmin;
+  font-size: 5vmin;
 }
