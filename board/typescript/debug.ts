@@ -16,6 +16,13 @@ export const renderBoard = () => {
             piece.className = 'p'
             piece.innerHTML = knightSVG(...getColors(value))
 
+            const val = document.createElement('div')
+
+            val.className = `n n${value}`
+            val.textContent = '' + 2 ** value
+
+            piece.appendChild(val)
+
             cell.appendChild(piece)
         }
     }

@@ -53,6 +53,17 @@ body {
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
-  width: 16vmin;
-  height: 16vmin;
+  width: 19vmin;
+  height: 19vmin;
+}
+
+svg {
+  position: absolute;
+  width: 19vmin;
+  height: 19vmin;
+}
+
+/* Value */
+.n {
+  z-index: 1;
 }
