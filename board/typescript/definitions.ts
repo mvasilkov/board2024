@@ -93,3 +93,64 @@ export const getMovesTable = (x0: number, y0: number): Board => {
 
     return moves
 }
+
+export const interact = (x: number, y: number) => {
+    // Select
+    if (!selected) {
+        if (board[y]![x]) selected = { x, y }
+    }
+
+    // Deselect
+    else if (selected.x === x && selected.y === y) {
+        selected = null
+    }
+
+    // Move
+    else if (!board[y]![x]) {
+        const moves = getMovesTable(selected.x, selected.y)
+
+        if (moves[y]![x]) {
+            board[y]![x] = board[selected.y]![selected.x]
+            board[selected.y]![selected.x] = null
+            selected = null
+
+            spawn()
+            spawn()
+        }
+        else {
+            // Move isn't possible, deselect instead
+            selected = null
+        }
+    }
+
+    // Merge
+    else if (board[y]![x] === board[selected.y]![selected.x]) {
+        const moves = getMovesTable(selected.x, selected.y)
+
+        if (moves[y]![x]) {
+            board[y]![x] *= 2
+            board[selected.y]![selected.x] = null
+            selected = null
+
+            const nextMove = getMoves(x, y).some(move => board[move.y]![move.x] === board[y]![x])
+            if (nextMove) {
+                // The piece can continue the chain. Select it
+                // and don't spawn new pieces.
+                selected = { x, y }
+            }
+            else {
+                spawn()
+                spawn()
+            }
+        }
+        else {
+            // Merge isn't possible, select instead
+            selected = { x, y }
+        }
+    }
+
+    // Select
+    else if (board[y]![x]) {
+        selected = { x, y }
+    }
+}
