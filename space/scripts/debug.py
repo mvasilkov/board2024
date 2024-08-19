@@ -1,0 +1,1 @@
+../../board/scripts/debug.py

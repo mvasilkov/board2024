@@ -12,7 +12,7 @@ export const enum Settings {
 
 type Optional<T> = T | null | undefined
 type BoardRow = [Optional<number>, Optional<number>, Optional<number>, Optional<number>]
-type Board = [BoardRow, BoardRow, BoardRow, BoardRow]
+export type Board = [BoardRow, BoardRow, BoardRow, BoardRow]
 
 const createBoard = (): Board => {
     return [
@@ -23,8 +23,8 @@ const createBoard = (): Board => {
     ]
 }
 
-let board: Board
-let selected: Optional<IVec2>
+export let board: Board
+export let selected: Optional<IVec2>
 let ended: ExtendedBool
 let prng: IPrng32
 
@@ -54,7 +54,7 @@ export const spawn = () => {
     }
 
     const { x, y } = vacant[randomUint32LessThan(prng, vacant.length)]!
-    board[y]![x] = 2
+    board[y]![x] = 1
 }
 
 export const getMoves = (x0: number, y0: number): IVec2[] => {
@@ -115,7 +115,7 @@ export const interact = (x: number, y: number) => {
             selected = null
 
             spawn()
-            spawn()
+            // spawn()
         }
         else {
             // Move isn't possible, deselect instead
@@ -128,7 +128,7 @@ export const interact = (x: number, y: number) => {
         const moves = getMovesTable(selected.x, selected.y)
 
         if (moves[y]![x]) {
-            board[y]![x]! *= 2
+            ++board[y]![x]!
             board[selected.y]![selected.x] = null
             selected = null
 
@@ -140,7 +140,7 @@ export const interact = (x: number, y: number) => {
             }
             else {
                 spawn()
-                spawn()
+                // spawn()
             }
         }
         else {

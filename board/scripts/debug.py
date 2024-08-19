@@ -6,7 +6,7 @@ from but.scripts.batch import run_script
 
 script = '''
 --persistent tsc -- --watch --preserveWatchOutput
-serve_static
+serve_static -h 127.0.0.1
 '''
 
 if __name__ == '__main__':

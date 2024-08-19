@@ -1,6 +1,7 @@
 'use strict'
 
-import { Settings } from './definitions.js'
+import { board, getMovesTable, interact, selected, Settings, type Board } from './definitions.js'
+import { knightSVG } from './pieces.js'
 
 const pieceColors = [
     '#1a1c2c',
@@ -37,6 +38,13 @@ export const getColors = (value: number): PieceColors => {
     return [color, outline, highlight, lowlight, lowlight2]
 }
 
+const bindClick = (cell: Element, x: number, y: number) => {
+    cell.addEventListener('click', () => {
+        interact(x, y)
+        renderBoard()
+    })
+}
+
 const getCellRefs = () => {
     const cellRefs: Element[][] = []
     const cells = document.querySelectorAll('.c')
@@ -45,7 +53,7 @@ const getCellRefs = () => {
         cellRefs[y] = []
 
         for (let x = 0; x < Settings.boardWidth; ++x) {
-            cellRefs[y]![x] = cells[4 * y + x]!
+            bindClick(cellRefs[y]![x] = cells[4 * y + x]!, x, y)
         }
     }
 
@@ -54,5 +62,75 @@ const getCellRefs = () => {
 
 export const cellRefs = getCellRefs()
 
+export const createPiece = (value: number) => {
+    const colors = getColors(value)
+    const piece = document.createElement('div')
+
+    piece.className = 'p'
+    // Change to setHTMLUnsafe() in 2025
+    piece.innerHTML = knightSVG(...colors)
+
+    // Outline
+    const g = piece.firstChild!.firstChild!
+    const path = g.firstChild!
+    const copy = path.cloneNode() as SVGPathElement
+
+    // copy.setAttribute('class', 'st')
+    copy.classList.add('st')
+    g.insertBefore(copy, path)
+
+    // Value
+    const val = document.createElement('div')
+
+    val.className = `n n${value}`
+    val.textContent = '' + 2 ** value
+    val.style.backgroundColor = colors[1] + '90'
+    val.style.color = colors[2]
+
+    piece.append(val)
+
+    return piece
+}
+
 export const renderBoard = () => {
+    let highlightMoves: Board | undefined
+
+    if (selected && board[selected.y]![selected.x]) {
+        highlightMoves = getMovesTable(selected.x, selected.y)
+    }
+
+    for (let y = 0; y < Settings.boardHeight; ++y) {
+        for (let x = 0; x < Settings.boardWidth; ++x) {
+            const cell = cellRefs[y]![x]!
+
+            if (selected?.x === x && selected?.y === y) {
+                cell.classList.add('s')
+            }
+            else {
+                cell.classList.remove('s')
+            }
+
+            if (highlightMoves?.[y]![x]) {
+                cell.classList.add('a')
+            }
+            else {
+                cell.classList.remove('a')
+            }
+
+            const piece = <Element>cell.firstChild
+            const value = board[y]![x]!
+
+            if (piece && !value) {
+                cell.removeChild(piece)
+            }
+
+            else if (!piece && value) {
+                cell.append(createPiece(value))
+            }
+
+            else if (piece && value) {
+                piece.replaceWith(createPiece(value))
+            }
+        }
+    }
 }
