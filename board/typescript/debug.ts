@@ -17,6 +17,16 @@ export const renderBoard = () => {
             piece.className = 'p'
             piece.innerHTML = knightSVG(...colors)
 
+            // Outline
+            const g = piece.firstChild!.firstChild!
+            const path = g.firstChild!
+            const copy = path.cloneNode() as SVGPathElement
+
+            copy.setAttribute('class', 'st')
+
+            g.insertBefore(copy, path)
+
+            // Value
             const val = document.createElement('div')
 
             val.className = `n n${value}`

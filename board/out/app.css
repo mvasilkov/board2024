@@ -53,6 +53,18 @@ body {
   box-shadow: 0 1vmin #633b3f, 0 1vmin 0 0.3333vmin #00000040;
 }
 
+/* Move available */
+.a::after {
+  content: '';
+  position: absolute;
+  top: 1.5vmin;
+  right: 1.5vmin;
+  height: 3vmin;
+  width: 3vmin;
+  background: #f4f4f4;
+  border-radius: 100%;
+}
+
 /* Piece */
 .p {
   display: flex;
@@ -76,4 +88,15 @@ svg {
   border-radius: 1.6vmin;
   padding: 0 1.4vmin;
   font-size: 5vmin;
+}
+
+/* Selected */
+.st {
+  fill: none;
+  stroke: none;
+  stroke-width: 3.4vmin;
+}
+
+.s .p .st {
+  stroke: #f4f4f4;
 }
