@@ -2,9 +2,10 @@
 
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 
-import { con, Settings } from './prelude.js'
+import { con, scene, Settings } from './prelude.js'
 
 const update = () => {
+    scene.update()
 }
 
 const render = () => {
