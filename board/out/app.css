@@ -36,6 +36,12 @@ body {
   background: #d49577;
   box-shadow: 0 1vmin #845750, 0 1vmin 0 0.3333vmin #00000040;
   border-radius: 8.3333%;
+  position: relative;
+  transition: transform 0.05s;
+}
+
+.c:active {
+  transform: translateY(0.5vmin);
 }
 
 /* Dark */

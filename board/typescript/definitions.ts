@@ -128,7 +128,7 @@ export const interact = (x: number, y: number) => {
         const moves = getMovesTable(selected.x, selected.y)
 
         if (moves[y]![x]) {
-            board[y]![x] *= 2
+            board[y]![x]! *= 2
             board[selected.y]![selected.x] = null
             selected = null
 
