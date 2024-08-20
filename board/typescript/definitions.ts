@@ -10,6 +10,7 @@ export const enum Settings {
     boardHeight = 4,
 }
 
+type ReadonlyVec2 = Readonly<IVec2>
 type Optional<T> = T | null | undefined
 type BoardRow = [Optional<number>, Optional<number>, Optional<number>, Optional<number>]
 export type Board = [BoardRow, BoardRow, BoardRow, BoardRow]
@@ -24,13 +25,15 @@ const createBoard = (): Board => {
 }
 
 export let board: Board
-export let selected: Optional<IVec2>
+export let selected: Optional<ReadonlyVec2>
+let vacated: Optional<ReadonlyVec2>
 let ended: ExtendedBool
 let prng: IPrng32
 
 export const reset = (seed?: number) => {
     board = createBoard()
     selected = null
+    vacated = null
     ended = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
@@ -38,7 +41,7 @@ export const reset = (seed?: number) => {
 reset()
 
 export const spawn = () => {
-    const vacant: IVec2[] = []
+    const vacant: ReadonlyVec2[] = []
 
     for (let y = 0; y < Settings.boardHeight; ++y) {
         for (let x = 0; x < Settings.boardWidth; ++x) {
@@ -54,11 +57,18 @@ export const spawn = () => {
     }
 
     const { x, y } = vacant[randomUint32LessThan(prng, vacant.length)]!
+
+    if (vacated && vacated.x === x && vacated.y === y) {
+        const { x, y } = vacant[randomUint32LessThan(prng, vacant.length)]!
+        board[y]![x] = 1
+        return
+    }
+
     board[y]![x] = 1
 }
 
-export const getMoves = (x0: number, y0: number): IVec2[] => {
-    const moves: IVec2[] = []
+export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
+    const moves: ReadonlyVec2[] = []
 
     const putMove = (Δx: number, Δy: number) => {
         const x = x0 + Δx
@@ -112,6 +122,7 @@ export const interact = (x: number, y: number) => {
         if (moves[y]![x]) {
             board[y]![x] = board[selected.y]![selected.x]
             board[selected.y]![selected.x] = null
+            vacated = selected
             selected = null
 
             spawn()
@@ -130,6 +141,7 @@ export const interact = (x: number, y: number) => {
         if (moves[y]![x]) {
             ++board[y]![x]!
             board[selected.y]![selected.x] = null
+            vacated = selected
             selected = null
 
             const nextMove = getMoves(x, y).some(move => board[move.y]![move.x] === board[y]![x])
