@@ -7,7 +7,7 @@ ts_start = '''
 '''.lstrip()
 
 ts_function = '''
-export const knightSVG = (color: string, outline: string, highlight: string, lowlight: string, lowlight2: string) =>
+export const %sSVG = (color: string, outline: string, highlight: string, lowlight: string, lowlight2: string) =>
     `%s`
 '''.lstrip()
 
@@ -33,11 +33,16 @@ def load_pieces():
     knight_svg_file = parent_dir / 'pieces' / 'wN.svg'
     knight_svg = knight_svg_file.read_text(encoding='utf-8')
 
+    king_svg_file = parent_dir / 'pieces' / 'wK.svg'
+    king_svg = king_svg_file.read_text(encoding='utf-8')
+
     assert '`' not in knight_svg
-    knight_fn = ts_function % replace_colors(knight_svg)
+    knight_fn = ts_function % ('knight', replace_colors(knight_svg))
+    king_fn = ts_function % ('king', replace_colors(king_svg))
 
     outfile = parent_dir / 'typescript' / 'pieces.ts'
-    outfile.write_text(f'{ts_start}\n{knight_fn}', encoding='utf-8', newline='\n')
+    outfile_text = '\n'.join([ts_start, knight_fn, king_fn])
+    outfile.write_text(outfile_text, encoding='utf-8', newline='\n')
 
 
 if __name__ == '__main__':
