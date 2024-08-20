@@ -2,10 +2,11 @@
 
 import type { Pointer } from '../../node_modules/natlib/controls/Pointer'
 import { register0 } from '../../node_modules/natlib/Vec2.js'
-import type { Scene } from '../../node_modules/natlib/verlet/Scene'
 import type { Vertex } from '../../node_modules/natlib/verlet/Vertex'
 
-type MetaScene = new (...a: any) => Scene
+import type { ParticleScene } from '../verlet/ParticleScene'
+
+type MetaScene = new (...a: any) => ParticleScene
 
 /** Enable scene's vertices to be controlled by the pointer. */
 export const WithVertexPointerControls = <T extends MetaScene>(Parent: T, pointer: Pointer, r: number, stiffness = 1) => {
