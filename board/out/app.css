@@ -73,6 +73,7 @@ body {
   justify-content: center;
   width: 19vmin;
   height: 19vmin;
+  z-index: 1;
 }
 
 svg {

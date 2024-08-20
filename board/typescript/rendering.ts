@@ -1,6 +1,6 @@
 'use strict'
 
-import { board, getMovesTable, interact, selected, Settings, type Board } from './definitions.js'
+import { board, destination, getMovesTable, interact, selected, Settings, vacated, type Board } from './definitions.js'
 import { knightSVG } from './pieces.js'
 
 const pieceColors = [
@@ -62,13 +62,20 @@ const getCellRefs = () => {
 
 export const cellRefs = getCellRefs()
 
-export const createPiece = (value: number) => {
+let last: typeof vacated
+
+export const createPiece = (x: number, y: number, value: number) => {
     const colors = getColors(value)
     const piece = document.createElement('div')
 
     piece.className = 'p'
     // Change to setHTMLUnsafe() in 2025
     piece.innerHTML = knightSVG(...colors)
+
+    if (vacated && vacated !== last && destination?.x === x && destination?.y === y) {
+        piece.style.animation = `.2s ease-out t${vacated.x}${vacated.y}${x}${y}`
+        last = vacated
+    }
 
     // Outline
     const g = piece.firstChild!.firstChild!
@@ -125,12 +132,36 @@ export const renderBoard = () => {
             }
 
             else if (!piece && value) {
-                cell.append(createPiece(value))
+                cell.append(createPiece(x, y, value))
             }
 
             else if (piece && value) {
-                piece.replaceWith(createPiece(value))
+                piece.replaceWith(createPiece(x, y, value))
             }
         }
     }
+}
+
+export const createStyles = () => {
+    const cellSize = 22.275
+    let css: string[] = []
+
+    for (let y0 = 0; y0 < Settings.boardHeight; ++y0) {
+        for (let x0 = 0; x0 < Settings.boardWidth; ++x0) {
+            for (let y1 = 0; y1 < Settings.boardHeight; ++y1) {
+                for (let x1 = 0; x1 < Settings.boardWidth; ++x1) {
+                    if (x0 === x1 && y0 === y1) continue
+
+                    const Δx = cellSize * (x0 - x1)
+                    const Δy = cellSize * (y0 - y1)
+
+                    css.push(`@keyframes t${x0}${y0}${x1}${y1}{0%{transform:translate3d(${Δx}vmin,${Δy}vmin,0)}100%{transform:translate3d(0,0,0)}}`)
+                }
+            }
+        }
+    }
+
+    const style = document.createElement('style')
+    style.textContent = css.join('')
+    document.head.append(style)
 }

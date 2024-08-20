@@ -26,7 +26,8 @@ const createBoard = (): Board => {
 
 export let board: Board
 export let selected: Optional<ReadonlyVec2>
-let vacated: Optional<ReadonlyVec2>
+export let vacated: Optional<ReadonlyVec2>
+export let destination: Optional<ReadonlyVec2>
 let ended: ExtendedBool
 let prng: IPrng32
 
@@ -34,6 +35,7 @@ export const reset = (seed?: number) => {
     board = createBoard()
     selected = null
     vacated = null
+    destination = null
     ended = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
@@ -123,6 +125,7 @@ export const interact = (x: number, y: number) => {
             board[y]![x] = board[selected.y]![selected.x]
             board[selected.y]![selected.x] = null
             vacated = selected
+            destination = { x, y }
             selected = null
 
             spawn()
@@ -142,6 +145,7 @@ export const interact = (x: number, y: number) => {
             ++board[y]![x]!
             board[selected.y]![selected.x] = null
             vacated = selected
+            destination = { x, y }
             selected = null
 
             const nextMove = getMoves(x, y).some(move => board[move.y]![move.x] === board[y]![x])

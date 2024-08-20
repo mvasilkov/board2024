@@ -10,7 +10,7 @@ export const renderBoard = () => {
             // Piece value (debug)
             const value = (x + y * Settings.boardWidth) % 12 + 1
 
-            cell.append(createPiece(value))
+            cell.append(createPiece(x, y, value))
         }
     }
 }
