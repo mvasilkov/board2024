@@ -76,6 +76,10 @@ body {
   z-index: 1;
 }
 
+.an {
+  z-index: 3;
+}
+
 svg {
   position: absolute;
   width: 19vmin;
@@ -89,6 +93,13 @@ svg {
   border-radius: 1.6vmin;
   padding: 0 1.4vmin;
   font-size: 5vmin;
+  z-index: 2;
+}
+
+.an .n {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  z-index: 4;
 }
 
 /* Selected */

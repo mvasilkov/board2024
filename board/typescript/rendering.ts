@@ -74,11 +74,13 @@ export const createPiece = (x: number, y: number, value: number) => {
     piece.innerHTML = knightSVG(...colors)
 
     if (vacated && vacated !== lastVacated && occupied?.x === x && occupied?.y === y) {
+        // easeOutQuad
         piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) t${vacated.x}${vacated.y}${x}${y}`
         lastVacated = vacated
     }
 
     else if (spawned && spawned !== lastSpawned && spawned?.x === x && spawned?.y === y) {
+        // easeOutQuad
         piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) sp`
         lastSpawned = spawned
     }
@@ -171,4 +173,12 @@ export const createStyles = () => {
     const style = document.createElement('style')
     style.textContent = css.join('')
     document.head.append(style)
+
+    document.addEventListener('animationstart', event => {
+        (event.target as Element | null)?.classList.add('an')
+    })
+
+    document.addEventListener('animationend', event => {
+        (event.target as Element | null)?.classList.remove('an')
+    })
 }
