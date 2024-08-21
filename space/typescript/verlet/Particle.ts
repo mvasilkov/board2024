@@ -2,10 +2,11 @@
 
 import { Vec2 } from '../../node_modules/natlib/Vec2.js'
 import { lerp } from '../../node_modules/natlib/interpolation.js'
-import type { Body } from '../../node_modules/natlib/verlet/Body'
+
+import type { ParticleBody } from './ParticleBody'
 
 export class Particle {
-    readonly body: Body
+    readonly body: ParticleBody
     readonly position: Vec2
     readonly oldPosition: Vec2
     readonly interpolated: Vec2
@@ -14,7 +15,7 @@ export class Particle {
     gravity: number
     viscosity: number
 
-    constructor(body: Body, x: number, y: number, radius: number, gravity: number, viscosity: number) {
+    constructor(body: ParticleBody, x: number, y: number, radius: number, gravity: number, viscosity: number) {
         this.body = body
         this.position = new Vec2(x, y)
         this.oldPosition = new Vec2(x, y)

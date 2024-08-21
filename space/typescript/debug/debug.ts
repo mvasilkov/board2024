@@ -2,14 +2,14 @@
 
 import { Mulberry32 } from '../../node_modules/natlib/prng/Mulberry32.js'
 import { randomUint32LessThan } from '../../node_modules/natlib/prng/prng.js'
-import { Body } from '../../node_modules/natlib/verlet/Body.js'
 
 import { Settings, con, scene } from '../prelude.js'
 import { Particle } from '../verlet/Particle.js'
+import { ParticleBody } from '../verlet/ParticleBody.js'
 
 export const createParticles = () => {
     const prng = new Mulberry32(999)
-    const body = new Body(scene)
+    const body = new ParticleBody(scene)
 
     for (let n = 0; n < 999; ++n) {
         const x = randomUint32LessThan(prng, Settings.screenWidth)

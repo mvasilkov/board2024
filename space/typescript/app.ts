@@ -4,6 +4,7 @@ import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 
 import { createParticles, paintParticles } from './debug/debug.js'
 import { Settings, con, scene } from './prelude.js'
+import { Character } from './verlet/Character.js'
 
 const update = () => {
     scene.update()
@@ -19,5 +20,7 @@ const render = (t: number) => {
 }
 
 createParticles()
+
+new Character(scene, 0.5 * Settings.screenWidth, 0.5 * Settings.screenHeight, 3)
 
 startMainloop(update, render)
