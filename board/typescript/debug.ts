@@ -8,7 +8,7 @@ export const renderBoard = () => {
         for (let x = 0; x < Settings.boardWidth; ++x) {
             const cell = cellRefs[y]![x]!
             // Piece value (debug)
-            const value = (x + y * Settings.boardWidth) % 12 + 1
+            const value = x + y * Settings.boardWidth + 1
 
             cell.append(createPiece(x, y, value))
         }

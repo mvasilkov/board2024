@@ -65,7 +65,7 @@ export const cellRefs = getCellRefs()
 let last: typeof vacated
 
 export const createPiece = (x: number, y: number, value: number) => {
-    const colors = getColors(value)
+    const colors = getColors((value - 1) % 12 + 1)
     const piece = document.createElement('div')
 
     piece.className = 'p'
@@ -89,7 +89,8 @@ export const createPiece = (x: number, y: number, value: number) => {
     // Value
     const val = document.createElement('div')
 
-    val.className = `n n${value}`
+    // val.className = `n n${value}`
+    val.className = 'n'
     val.textContent = '' + 2 ** value
     val.style.backgroundColor = colors[1] + '90'
     val.style.color = colors[2]
