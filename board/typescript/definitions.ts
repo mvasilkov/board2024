@@ -25,9 +25,14 @@ const createBoard = (): Board => {
 }
 
 export let board: Board
+/** Selected cell */
 export let selected: Optional<ReadonlyVec2>
+/** Cell vacated in the last turn */
 export let vacated: Optional<ReadonlyVec2>
-export let destination: Optional<ReadonlyVec2>
+/** Cell occupied in the last turn */
+export let occupied: Optional<ReadonlyVec2>
+/** Position of the last spawned piece */
+export let spawned: Optional<ReadonlyVec2>
 let ended: ExtendedBool
 let prng: IPrng32
 
@@ -35,7 +40,8 @@ export const reset = (seed?: number) => {
     board = createBoard()
     selected = null
     vacated = null
-    destination = null
+    occupied = null
+    spawned = null
     ended = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
@@ -63,10 +69,12 @@ export const spawn = () => {
     if (vacated && vacated.x === x && vacated.y === y) {
         const { x, y } = vacant[randomUint32LessThan(prng, vacant.length)]!
         board[y]![x] = 1
+        spawned = { x, y }
         return
     }
 
     board[y]![x] = 1
+    spawned = { x, y }
 }
 
 export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
@@ -125,7 +133,7 @@ export const interact = (x: number, y: number) => {
             board[y]![x] = board[selected.y]![selected.x]
             board[selected.y]![selected.x] = null
             vacated = selected
-            destination = { x, y }
+            occupied = { x, y }
             selected = null
 
             spawn()
@@ -145,7 +153,7 @@ export const interact = (x: number, y: number) => {
             ++board[y]![x]!
             board[selected.y]![selected.x] = null
             vacated = selected
-            destination = { x, y }
+            occupied = { x, y }
             selected = null
 
             const nextMove = getMoves(x, y).some(move => board[move.y]![move.x] === board[y]![x])

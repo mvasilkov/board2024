@@ -1,6 +1,6 @@
 'use strict'
 
-import { board, destination, getMovesTable, interact, selected, Settings, vacated, type Board } from './definitions.js'
+import { board, getMovesTable, interact, occupied, selected, Settings, spawned, vacated, type Board } from './definitions.js'
 import { knightSVG } from './pieces.js'
 
 const pieceColors = [
@@ -62,7 +62,8 @@ const getCellRefs = () => {
 
 export const cellRefs = getCellRefs()
 
-let last: typeof vacated
+let lastVacated: typeof vacated
+let lastSpawned: typeof spawned
 
 export const createPiece = (x: number, y: number, value: number) => {
     const colors = getColors((value - 1) % 12 + 1)
@@ -72,9 +73,14 @@ export const createPiece = (x: number, y: number, value: number) => {
     // Change to setHTMLUnsafe() in 2025
     piece.innerHTML = knightSVG(...colors)
 
-    if (vacated && vacated !== last && destination?.x === x && destination?.y === y) {
-        piece.style.animation = `.2s ease-out t${vacated.x}${vacated.y}${x}${y}`
-        last = vacated
+    if (vacated && vacated !== lastVacated && occupied?.x === x && occupied?.y === y) {
+        piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) t${vacated.x}${vacated.y}${x}${y}`
+        lastVacated = vacated
+    }
+
+    else if (spawned && spawned !== lastSpawned && spawned?.x === x && spawned?.y === y) {
+        piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) sp`
+        lastSpawned = spawned
     }
 
     // Outline
@@ -156,7 +162,7 @@ export const createStyles = () => {
                     const Δx = cellSize * (x0 - x1)
                     const Δy = cellSize * (y0 - y1)
 
-                    css.push(`@keyframes t${x0}${y0}${x1}${y1}{0%{transform:translate3d(${Δx}vmin,${Δy}vmin,0)}100%{transform:translate3d(0,0,0)}}`)
+                    css.push(`@keyframes t${x0}${y0}${x1}${y1}{0%{transform:translate(${Δx}vmin,${Δy}vmin)}100%{transform:translate(0,0)}}`)
                 }
             }
         }
