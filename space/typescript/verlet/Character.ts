@@ -1,5 +1,7 @@
 'use strict'
 
+import type { Vec2 } from '../../node_modules/natlib/Vec2'
+
 import { con } from '../prelude.js'
 import { Particle } from './Particle.js'
 import { ParticleBody } from './ParticleBody.js'
@@ -38,8 +40,8 @@ export class Character extends ParticleBody {
     }
 }
 
-const wavyLine = ({ vertices }: { vertices: Particle[] }, start: number, end: number) => {
-    const points = vertices.slice(start, end).map(v => v.position)
+const wavyLine = ({ positions }: { positions: Vec2[] }, start: number, end: number) => {
+    const points = positions.slice(start, end)
 
     let p0 = points[0]!
     let p1 = points[1]!
@@ -47,13 +49,13 @@ const wavyLine = ({ vertices }: { vertices: Particle[] }, start: number, end: nu
     con.moveTo(p0.x, p0.y)
 
     for (let n = 1; n < points.length - 2; ++n) {
-        p0 = points[n]!
+        p0 = p1
         p1 = points[n + 1]!
 
         con.quadraticCurveTo(p0.x, p0.y, 0.5 * (p0.x + p1.x), 0.5 * (p0.y + p1.y))
     }
 
-    p0 = points.at(-2)!
+    p0 = p1
     p1 = points.at(-1)!
 
     con.quadraticCurveTo(p0.x, p0.y, p1.x, p1.y)

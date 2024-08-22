@@ -4,7 +4,7 @@
 // See https://github.com/mvasilkov/natlib/tree/master/typescript/verlet
 // for a fully-featured version.
 
-import { Vec2 } from '../../node_modules/natlib/Vec2.js'
+import type { Vec2 } from '../../node_modules/natlib/Vec2'
 
 import type { Particle } from './Particle'
 import type { ParticleConstraint } from './ParticleConstraint'

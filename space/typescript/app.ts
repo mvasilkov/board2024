@@ -6,7 +6,7 @@ import { createParticles, paintParticles } from './debug/debug.js'
 import { Settings, con, scene } from './prelude.js'
 import { Character } from './verlet/Character.js'
 
-const character = new Character(scene, 0.5 * Settings.screenWidth, 0.5 * Settings.screenHeight, 3)
+const character = new Character(scene, 0.5 * Settings.screenWidth, 0.5 * Settings.screenHeight, 5)
 
 const update = () => {
     scene.update()
