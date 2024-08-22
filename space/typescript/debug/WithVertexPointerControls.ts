@@ -1,5 +1,9 @@
 'use strict'
 
+// This file is adapted from natlib's Verlet integration code.
+// See https://github.com/mvasilkov/natlib/tree/master/typescript/verlet
+// for a fully-featured version.
+
 import type { Pointer } from '../../node_modules/natlib/controls/Pointer'
 import { register0 } from '../../node_modules/natlib/Vec2.js'
 

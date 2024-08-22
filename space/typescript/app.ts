@@ -6,6 +6,8 @@ import { createParticles, paintParticles } from './debug/debug.js'
 import { Settings, con, scene } from './prelude.js'
 import { Character } from './verlet/Character.js'
 
+const character = new Character(scene, 0.5 * Settings.screenWidth, 0.5 * Settings.screenHeight, 3)
+
 const update = () => {
     scene.update()
 }
@@ -16,11 +18,11 @@ const render = (t: number) => {
 
     scene.vertices.forEach(v => v.interpolate(t))
 
+    character.paint()
+
     paintParticles()
 }
 
 createParticles()
-
-new Character(scene, 0.5 * Settings.screenWidth, 0.5 * Settings.screenHeight, 3)
 
 startMainloop(update, render)

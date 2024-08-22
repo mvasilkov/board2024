@@ -1,5 +1,9 @@
 'use strict'
 
+// This file is adapted from natlib's Verlet integration code.
+// See https://github.com/mvasilkov/natlib/tree/master/typescript/verlet
+// for a fully-featured version.
+
 import { Vec2 } from '../../node_modules/natlib/Vec2.js'
 import { lerp } from '../../node_modules/natlib/interpolation.js'
 
