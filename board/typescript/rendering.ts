@@ -3,7 +3,7 @@
 import type { ExtendedBool } from '../node_modules/natlib/prelude'
 
 import { board, getMovesTable, interact, occupied, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
-import { knightSVG } from './pieces.js'
+import { kingSVG, knightSVG } from './pieces.js'
 
 const pieceColors = [
     '#1a1c2c',
@@ -30,7 +30,17 @@ const pieceColors = [
 
 type PieceColors = [color: string, outline: string, highlight: string, lowlight: string, lowlight2: string]
 
+const kingColors: PieceColors = [
+    '#2c1e31',
+    '#10121c',
+    '#6b2643',
+    '#10121c',
+    '#10121c',
+]
+
 export const getColors = (value: number): PieceColors => {
+    if (value < 0) return kingColors
+
     const color = pieceColors.at(-value - 3)!
     const outline = pieceColors.at(0)!
     const highlight = pieceColors.at(-value)!
@@ -73,7 +83,7 @@ export const createPiece = (x: number, y: number, value: number) => {
 
     piece.className = 'p'
     // Change to setHTMLUnsafe() in 2025
-    piece.innerHTML = knightSVG(...colors)
+    piece.innerHTML = value < 0 ? kingSVG(...colors) : knightSVG(...colors)
 
     if (vacated && vacated !== lastVacated && occupied?.x === x && occupied?.y === y) {
         // easeOutQuad
