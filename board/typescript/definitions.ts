@@ -77,6 +77,10 @@ export const spawn = () => {
     spawned = { x, y }
 }
 
+export const setSpawned = (x: number, y: number) => {
+    spawned = { x, y }
+}
+
 export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
     const moves: ReadonlyVec2[] = []
 

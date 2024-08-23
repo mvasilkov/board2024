@@ -1,6 +1,8 @@
 'use strict'
 
-import { board, getMovesTable, interact, occupied, selected, Settings, spawned, vacated, type Board } from './definitions.js'
+import type { ExtendedBool } from '../node_modules/natlib/prelude'
+
+import { board, getMovesTable, interact, occupied, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
 import { knightSVG } from './pieces.js'
 
 const pieceColors = [
@@ -108,7 +110,7 @@ export const createPiece = (x: number, y: number, value: number) => {
     return piece
 }
 
-export const renderBoard = () => {
+export const renderBoard = (spawnMany?: ExtendedBool) => {
     let highlightMoves: Board | undefined
 
     if (selected && board[selected.y]![selected.x]) {
@@ -141,6 +143,7 @@ export const renderBoard = () => {
             }
 
             else if (!piece && value) {
+                if (spawnMany) setSpawned(x, y)
                 cell.append(createPiece(x, y, value))
             }
 
