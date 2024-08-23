@@ -3,7 +3,7 @@
 import type { ExtendedBool, ShortBool } from '../node_modules/natlib/prelude'
 
 import { board, getMovesTable, interact, occupied, PieceSpecies, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
-import { kingSVG, knightSVG } from './pieces.js'
+import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 
 const pieceColors = [
     '#1a1c2c',
@@ -78,9 +78,9 @@ type SpeciesSVG = typeof knightSVG
 
 const speciesSVG: Record<PieceSpecies, SpeciesSVG> = {
     [PieceSpecies.knight]: knightSVG,
-    [PieceSpecies.bishop]: knightSVG,
-    [PieceSpecies.rook]: knightSVG,
-    [PieceSpecies.queen]: knightSVG,
+    [PieceSpecies.bishop]: bishopSVG,
+    [PieceSpecies.rook]: rookSVG,
+    [PieceSpecies.queen]: queenSVG,
     [PieceSpecies.king]: kingSVG,
 }
 
