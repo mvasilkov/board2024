@@ -1,6 +1,6 @@
 'use strict'
 
-import { Settings } from './definitions.js'
+import { PieceSpecies, Settings } from './definitions.js'
 import { cellRefs, createPiece } from './rendering.js'
 
 export const renderBoard = () => {
@@ -10,7 +10,7 @@ export const renderBoard = () => {
             // Piece value (debug)
             const value = x + y * Settings.boardWidth + 1
 
-            cell.append(createPiece(x, y, value))
+            cell.append(createPiece(x, y, PieceSpecies.knight, value))
         }
     }
 }

@@ -1,8 +1,8 @@
 'use strict'
 
-import type { ExtendedBool } from '../node_modules/natlib/prelude'
+import type { ExtendedBool, ShortBool } from '../node_modules/natlib/prelude'
 
-import { board, getMovesTable, interact, occupied, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
+import { board, getMovesTable, interact, occupied, PieceSpecies, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
 import { kingSVG, knightSVG } from './pieces.js'
 
 const pieceColors = [
@@ -74,16 +74,26 @@ const getCellRefs = () => {
 
 export const cellRefs = getCellRefs()
 
+type SpeciesSVG = typeof knightSVG
+
+const speciesSVG: Record<PieceSpecies, SpeciesSVG> = {
+    [PieceSpecies.knight]: knightSVG,
+    [PieceSpecies.bishop]: knightSVG,
+    [PieceSpecies.rook]: knightSVG,
+    [PieceSpecies.queen]: knightSVG,
+    [PieceSpecies.king]: kingSVG,
+}
+
 let lastVacated: typeof vacated
 let lastSpawned: typeof spawned
 
-export const createPiece = (x: number, y: number, value: number) => {
+export const createPiece = (x: number, y: number, species: PieceSpecies, value: number) => {
     const colors = getColors((value - 1) % 12 + 1)
     const piece = document.createElement('div')
 
     piece.className = 'p'
     // Change to setHTMLUnsafe() in 2025
-    piece.innerHTML = value < 0 ? kingSVG(...colors) : knightSVG(...colors)
+    piece.innerHTML = speciesSVG[species](...colors)
 
     if (vacated && vacated !== lastVacated && occupied?.x === x && occupied?.y === y) {
         // easeOutQuad
@@ -121,7 +131,7 @@ export const createPiece = (x: number, y: number, value: number) => {
 }
 
 export const renderBoard = (spawnMany?: ExtendedBool) => {
-    let highlightMoves: Board | undefined
+    let highlightMoves: Board<ShortBool> | undefined
 
     if (selected && board[selected.y]![selected.x]) {
         highlightMoves = getMovesTable(selected.x, selected.y)
@@ -146,7 +156,15 @@ export const renderBoard = (spawnMany?: ExtendedBool) => {
             }
 
             const piece = <Element>cell.firstChild
-            const value = board[y]![x]!
+
+            let species = PieceSpecies.knight
+            let value = 0
+
+            const boardPiece = board[y]![x]
+            if (boardPiece) {
+                species = boardPiece.species
+                value = boardPiece.value
+            }
 
             if (piece && !value) {
                 cell.removeChild(piece)
@@ -154,11 +172,11 @@ export const renderBoard = (spawnMany?: ExtendedBool) => {
 
             else if (!piece && value) {
                 if (spawnMany) setSpawned(x, y)
-                cell.append(createPiece(x, y, value))
+                cell.append(createPiece(x, y, species, value))
             }
 
             else if (piece && value) {
-                piece.replaceWith(createPiece(x, y, value))
+                piece.replaceWith(createPiece(x, y, species, value))
             }
         }
     }

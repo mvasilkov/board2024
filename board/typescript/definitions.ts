@@ -10,12 +10,21 @@ export const enum Settings {
     boardHeight = 4,
 }
 
+export const enum PieceSpecies {
+    knight = 1,
+    bishop,
+    rook,
+    queen,
+    king,
+}
+
 type ReadonlyVec2 = Readonly<IVec2>
 type Optional<T> = T | null | undefined
-type BoardRow = [Optional<number>, Optional<number>, Optional<number>, Optional<number>]
-export type Board = [BoardRow, BoardRow, BoardRow, BoardRow]
+type Piece = { species: PieceSpecies, value: number }
+type BoardRow<T> = [Optional<T>, Optional<T>, Optional<T>, Optional<T>]
+export type Board<T> = [BoardRow<T>, BoardRow<T>, BoardRow<T>, BoardRow<T>]
 
-const createBoard = (): Board => {
+const createBoard = <T>(): Board<T> => {
     return [
         [, , , ,],
         [, , , ,],
@@ -24,7 +33,7 @@ const createBoard = (): Board => {
     ]
 }
 
-export let board: Board
+export let board: Board<Piece>
 /** Selected cell */
 export let selected: Optional<ReadonlyVec2>
 /** Cell vacated in the last turn */
@@ -68,12 +77,12 @@ export const spawn = () => {
 
     if (vacated && vacated.x === x && vacated.y === y) {
         const { x, y } = vacant[randomUint32LessThan(prng, vacant.length)]!
-        board[y]![x] = 1
+        board[y]![x] = { species: PieceSpecies.knight, value: 1 }
         spawned = { x, y }
         return
     }
 
-    board[y]![x] = 1
+    board[y]![x] = { species: PieceSpecies.knight, value: 1 }
     spawned = { x, y }
 }
 
@@ -90,7 +99,7 @@ export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
 
         if (x >= 0 && x < Settings.boardWidth &&
             y >= 0 && y < Settings.boardHeight &&
-            (!board[y]![x] || board[y]![x] === board[y0]![x0])) {
+            (!board[y]![x] || board[y]![x].value === board[y0]![x0]?.value)) {
 
             moves.push({ x, y })
         }
@@ -108,8 +117,8 @@ export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
     return moves
 }
 
-export const getMovesTable = (x0: number, y0: number): Board => {
-    const moves = createBoard()
+export const getMovesTable = (x0: number, y0: number): Board<ShortBool> => {
+    const moves = createBoard<ShortBool>()
 
     getMoves(x0, y0).forEach(({ x, y }) => {
         moves[y]![x] = ShortBool.TRUE
@@ -150,17 +159,17 @@ export const interact = (x: number, y: number) => {
     }
 
     // Merge
-    else if (board[y]![x] === board[selected.y]![selected.x]) {
+    else if (board[y]![x].value === board[selected.y]![selected.x]?.value) {
         const moves = getMovesTable(selected.x, selected.y)
 
         if (moves[y]![x]) {
-            ++board[y]![x]!
+            const value = ++board[y]![x].value
             board[selected.y]![selected.x] = null
             vacated = selected
             occupied = { x, y }
             selected = null
 
-            const nextMove = getMoves(x, y).some(move => board[move.y]![move.x] === board[y]![x])
+            const nextMove = getMoves(x, y).some(move => board[move.y]![move.x]?.value === value)
             if (nextMove) {
                 // The piece can continue the chain. Select it
                 // and don't spawn new pieces.

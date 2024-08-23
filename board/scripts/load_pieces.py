@@ -7,7 +7,7 @@ ts_start = '''
 '''.lstrip()
 
 ts_function = '''
-export const %sSVG = (color: string, outline: string, highlight: string, lowlight: string, lowlight2: string) =>
+export const %sSVG = (color: string, outline: string, highlight: string, lowlight: string, _lowlight2: string) =>
     `%s`
 '''.lstrip()
 
@@ -21,7 +21,7 @@ def replace_colors(svg: str) -> str:
         .replace('fill="#fff"', 'fill="${highlight}" style="mix-blend-mode:lighten"')
         .replace('opacity=".2" stroke="#000"', 'fill="${lowlight}" stroke="${lowlight}" style="mix-blend-mode:darken"')
         .replace('opacity=".2"', 'fill="${lowlight}" style="mix-blend-mode:darken"')
-        .replace('opacity=".5"', 'fill="${lowlight2}" style="mix-blend-mode:darken"')
+        .replace('opacity=".5"', 'fill="${_lowlight2}" style="mix-blend-mode:darken"')
         .replace('stroke-width="1.5"', 'stroke-width="1.2"')
     )
     return result
