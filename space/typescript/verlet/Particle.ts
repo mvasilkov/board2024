@@ -50,13 +50,13 @@ export class Particle {
         const { height, width } = this.body.scene
 
         if (pos.y < this.radius) pos.y = this.radius
-        else if (pos.y >= height - this.radius) {
-            pos.y = height - this.radius - 1
+        else if (pos.y > height - this.radius) {
+            pos.y = height - this.radius
         }
 
         if (pos.x < this.radius) pos.x = this.radius
-        else if (pos.x >= width - this.radius) {
-            pos.x = width - this.radius - 1
+        else if (pos.x > width - this.radius) {
+            pos.x = width - this.radius
         }
     }
 
