@@ -22,7 +22,7 @@ export const WithVertexPointerControls = <T extends MetaScene>(Parent: T, pointe
             // Set the controlled vertex.
             if (pointer.held) {
                 if (!this.controlledVertex) {
-                    this.vertices.some(v => v.position.distanceSquared(pointer) < r ** 2 &&
+                    this.vertices.some(v => v.position.distanceSquared(pointer) < (v.radius + r) ** 2 &&
                         (this.controlledVertex = v))
                 }
             }

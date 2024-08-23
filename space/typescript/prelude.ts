@@ -14,6 +14,10 @@ export const enum Settings {
     iterationCount = 4,
 }
 
+export const enum Palette {
+    space = '#000',
+}
+
 // Output
 
 export const canvas = new CanvasHandle(document.querySelector('canvas')!,
@@ -28,7 +32,7 @@ pointer.addEventListeners(document)
 
 // Physics
 
-const PScene = WithVertexPointerControls(ParticleScene, pointer, 9, 0.5)
+const PScene = WithVertexPointerControls(ParticleScene, pointer, 2, 0.5)
 
 export const scene = new PScene(Settings.screenWidth, Settings.screenHeight,
     Settings.iterationCount)
