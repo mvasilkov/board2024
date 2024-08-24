@@ -3,7 +3,7 @@
 import { PieceSpecies, Settings } from './definitions.js'
 import { cellRefs, createPiece } from './rendering.js'
 
-export const renderBoard = () => {
+export const renderBoard = (_: unknown) => {
     for (let y = 0; y < Settings.boardHeight; ++y) {
         for (let x = 0; x < Settings.boardWidth; ++x) {
             const cell = cellRefs[y]![x]!

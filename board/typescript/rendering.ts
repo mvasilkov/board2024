@@ -84,16 +84,46 @@ const speciesSVG: Record<PieceSpecies, SpeciesSVG> = {
     [PieceSpecies.king]: kingSVG,
 }
 
+let patternIndex = 0
+
+const getPatternSVG = (background: string, color: string) =>
+    `<pattern id="pa${++patternIndex}" patternTransform="scale(3.4)" patternUnits="userSpaceOnUse" width="4" height="4"><rect width="4" height="4" fill="${background}"/><path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" stroke="${color}" stroke-width="1.5"/></pattern>`
+
 let lastVacated: typeof vacated
 let lastSpawned: typeof spawned
 
 export const createPiece = (x: number, y: number, species: PieceSpecies, value: number) => {
-    const colors = getColors((value - 1) % 12 + 1)
     const piece = document.createElement('div')
 
     piece.className = 'p'
+
+    const colorIndex = (value - 1) % 12 + 1
+    const colors = getColors(colorIndex)
+
+    let svg: string
+
+    if (value % 2) {
+        svg = speciesSVG[species](...colors)
+    }
+    else {
+        const colors = getColors(colorIndex + 1)
+        const lightColors = getColors(colorIndex - 1)
+
+        const colorPattern = getPatternSVG(colors[0], lightColors[0])
+        colors[0] = `url(#pa${patternIndex})`
+
+        const highlightPattern = getPatternSVG(colors[2], lightColors[2])
+        colors[2] = `url(#pa${patternIndex})`
+
+        const lowlightPattern = getPatternSVG(colors[3], lightColors[3])
+        colors[3] = `url(#pa${patternIndex})`
+
+        svg = speciesSVG[species](...colors)
+            .replace('</svg>', '<defs>' + colorPattern + highlightPattern + lowlightPattern + '</defs></svg>')
+    }
+
     // Change to setHTMLUnsafe() in 2025
-    piece.innerHTML = speciesSVG[species](...colors)
+    piece.innerHTML = svg
 
     if (vacated && vacated !== lastVacated && occupied?.x === x && occupied?.y === y) {
         // easeOutQuad
