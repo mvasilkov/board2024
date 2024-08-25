@@ -10,6 +10,11 @@ export const renderBoard = (_: unknown) => {
             // Piece value (debug)
             const value = x + y * Settings.boardWidth + 1
 
+            if (value === 13) {
+                cell.append(createPiece(x, y, PieceSpecies.king, -1))
+                continue
+            }
+
             cell.append(createPiece(x, y, PieceSpecies.knight, value))
         }
     }

@@ -28,24 +28,37 @@ const pieceColors = [
     '#ffcd75',
 ]
 
-type PieceColors = [color: string, outline: string, highlight: string, lowlight: string, lowlight2: string]
-
-const kingColors: PieceColors = [
-    '#2c1e31',
-    '#10121c',
-    '#6b2643',
-    '#10121c',
-    '#10121c',
+const kingColors = [
+    '#17001d',
+    '#300123',
+    '#450428',
+    '#58092d',
+    '#690f31',
+    '#7b1235',
+    '#8d1539',
+    '#9e173b',
+    '#af173d',
+    '#bf1640',
+    '#d01441',
+    '#df1143',
+    '#ef0c45',
+    // '#ff0546',
 ]
 
-export const getColors = (value: number): PieceColors => {
-    if (value < 0) return kingColors
+type PieceColors = [color: string, outline: string, highlight: string, lowlight: string, lowlight2: string]
 
-    const color = pieceColors.at(-value - 3)!
-    const outline = pieceColors.at(0)!
-    const highlight = pieceColors.at(-value)!
-    const lowlight = pieceColors.at(-value - 6)!
-    const lowlight2 = pieceColors.at(-value - 8)!
+export const getColors = (value: number): PieceColors => {
+    let _pieceColors = pieceColors
+    if (value < 0) {
+        _pieceColors = kingColors
+        value = 1
+    }
+
+    const color = _pieceColors.at(-value - 3)!
+    const outline = _pieceColors.at(0)!
+    const highlight = _pieceColors.at(-value)!
+    const lowlight = _pieceColors.at(-value - 6)!
+    const lowlight2 = _pieceColors.at(-value - 8)!
 
     return [color, outline, highlight, lowlight, lowlight2]
 }
@@ -145,6 +158,10 @@ export const createPiece = (x: number, y: number, species: PieceSpecies, value: 
     // copy.setAttribute('class', 'st')
     copy.classList.add('st')
     g.insertBefore(copy, path)
+
+    if (species === PieceSpecies.king) {
+        return piece
+    }
 
     // Value
     const val = document.createElement('div')
