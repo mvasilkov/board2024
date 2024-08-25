@@ -113,6 +113,15 @@ svg {
   stroke: #f4f4f4;
 }
 
+/* Selected king */
+.s .p.ps5 svg {
+  animation: 0.5s ease-in-out no;
+}
+
+.s .p.ps5 .st {
+  stroke: none;
+}
+
 /* Spawn */
 @keyframes sp {
   0% {
@@ -121,5 +130,32 @@ svg {
 
   100% {
     transform: scale(1);
+  }
+}
+
+/* Decline */
+@keyframes no {
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-1.2vmin);
+  }
+
+  40% {
+    transform: translateX(1.2vmin);
+  }
+
+  60% {
+    transform: translateX(-1vmin);
+  }
+
+  80% {
+    transform: translateX(1vmin);
+  }
+
+  100% {
+    transform: translateX(0);
   }
 }

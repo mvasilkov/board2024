@@ -108,7 +108,7 @@ let lastSpawned: typeof spawned
 export const createPiece = (x: number, y: number, species: PieceSpecies, value: number) => {
     const piece = document.createElement('div')
 
-    piece.className = 'p'
+    piece.className = `p ps${species}`
 
     const colorIndex = (value - 1) % 12 + 1
     const colors = getColors(colorIndex)
