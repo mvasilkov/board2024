@@ -94,7 +94,7 @@ export const setSpawned = (x: number, y: number) => {
 export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
     const moves: ReadonlyVec2[] = []
 
-    const putMove = (Δx: number, Δy: number) => {
+    const putMove = (Δx: number, Δy: number): ExtendedBool => {
         const x = x0 + Δx
         const y = y0 + Δy
 
@@ -103,17 +103,55 @@ export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
             (!board[y]![x] || board[y]![x].value === board[y0]![x0]?.value)) {
 
             moves.push({ x, y })
+
+            return ShortBool.TRUE
         }
+
+        return ShortBool.FALSE
     }
 
-    putMove(-2, -1)
-    putMove(-2, 1)
-    putMove(-1, -2)
-    putMove(-1, 2)
-    putMove(1, -2)
-    putMove(1, 2)
-    putMove(2, -1)
-    putMove(2, 1)
+    const piece = board[y0]![x0]
+    if (!piece) return moves
+
+    const { species } = piece
+
+    switch (species) {
+        case PieceSpecies.knight:
+            putMove(-2, -1)
+            putMove(-2, 1)
+            putMove(-1, -2)
+            putMove(-1, 2)
+            putMove(1, -2)
+            putMove(1, 2)
+            putMove(2, -1)
+            putMove(2, 1)
+            break
+
+        case PieceSpecies.bishop:
+            putMove(-1, -1) && putMove(-2, -2) && putMove(-3, -3)
+            putMove(-1, 1) && putMove(-2, 2) && putMove(-3, 3)
+            putMove(1, -1) && putMove(2, -2) && putMove(3, -3)
+            putMove(1, 1) && putMove(2, 2) && putMove(3, 3)
+            break
+
+        case PieceSpecies.rook:
+            putMove(-1, 0) && putMove(-2, 0) && putMove(-3, 0)
+            putMove(0, -1) && putMove(0, -2) && putMove(0, -3)
+            putMove(1, 0) && putMove(2, 0) && putMove(3, 0)
+            putMove(0, 1) && putMove(0, 2) && putMove(0, 3)
+            break
+
+        case PieceSpecies.queen:
+            putMove(-1, -1) && putMove(-2, -2) && putMove(-3, -3)
+            putMove(-1, 1) && putMove(-2, 2) && putMove(-3, 3)
+            putMove(1, -1) && putMove(2, -2) && putMove(3, -3)
+            putMove(1, 1) && putMove(2, 2) && putMove(3, 3)
+
+            putMove(-1, 0) && putMove(-2, 0) && putMove(-3, 0)
+            putMove(0, -1) && putMove(0, -2) && putMove(0, -3)
+            putMove(1, 0) && putMove(2, 0) && putMove(3, 0)
+            putMove(0, 1) && putMove(0, 2) && putMove(0, 3)
+    }
 
     return moves
 }
