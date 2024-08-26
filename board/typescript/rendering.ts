@@ -49,7 +49,7 @@ type PieceColors = [color: string, outline: string, highlight: string, lowlight:
 
 export const getColors = (value: number): PieceColors => {
     let _pieceColors = pieceColors
-    if (value < 0) {
+    if (value === Settings.kingValue) {
         _pieceColors = kingColors
         value = 1
     }
@@ -110,12 +110,12 @@ export const createPiece = (x: number, y: number, species: PieceSpecies, value: 
 
     piece.className = `p ps${species}`
 
-    const colorIndex = (value - 1) % 12 + 1
+    const colorIndex = (value - 1) % Settings.kingValue + 1
     const colors = getColors(colorIndex)
 
     let svg: string
 
-    if (value % 2) {
+    if (value === Settings.kingValue || value % 2) {
         svg = speciesSVG[species](...colors)
     }
     else {

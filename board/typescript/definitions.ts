@@ -8,6 +8,7 @@ import { randomUint32LessThan, type IPrng32 } from '../node_modules/natlib/prng/
 export const enum Settings {
     boardWidth = 4,
     boardHeight = 4,
+    kingValue = 10,
 }
 
 export const enum PieceSpecies {

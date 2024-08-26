@@ -11,7 +11,7 @@ export const renderBoard = (_: unknown) => {
             const value = x + y * Settings.boardWidth + 1
 
             if (value === 13) {
-                cell.append(createPiece(x, y, PieceSpecies.king, -1))
+                cell.append(createPiece(x, y, PieceSpecies.king, Settings.kingValue))
                 continue
             }
 
