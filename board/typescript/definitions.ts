@@ -98,16 +98,18 @@ export const getMoves = (x0: number, y0: number): ReadonlyVec2[] => {
         const x = x0 + Δx
         const y = y0 + Δy
 
+        let passable: boolean
+
         if (x >= 0 && x < Settings.boardWidth &&
             y >= 0 && y < Settings.boardHeight &&
-            (!board[y]![x] || board[y]![x].value === board[y0]![x0]?.value)) {
+            ((passable = !board[y]![x]) || board[y]![x].value === board[y0]![x0]?.value)) {
 
             moves.push({ x, y })
 
-            return ShortBool.TRUE
+            return passable
         }
 
-        return ShortBool.FALSE
+        return
     }
 
     const piece = board[y0]![x0]
