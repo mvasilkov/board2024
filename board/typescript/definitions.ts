@@ -254,4 +254,36 @@ export const playKing = () => {
     }
 
     if (x0 === Settings.outOfBounds) return // King not found
+
+    const canMove: IVec2[] = []
+    const canTake: (IVec2 & { value: number })[] = []
+
+    const putMove = (Δx: number, Δy: number) => {
+        const x = x0 + Δx
+        const y = y0 + Δy
+
+        if (x >= 0 && x < Settings.boardWidth &&
+            y >= 0 && y < Settings.boardHeight) {
+
+            const piece = board[y]![x]
+            if (!piece) {
+                canMove.push({ x, y })
+            }
+            else {
+                canTake.push({ x, y, value: piece.value })
+            }
+        }
+    }
+
+    putMove(-1, -1)
+    putMove(-1, 0)
+    putMove(-1, 1)
+    putMove(0, -1)
+    putMove(0, 1)
+    putMove(1, -1)
+    putMove(1, 0)
+    putMove(1, 1)
+
+    // Sort by value, descending
+    canTake.sort((a, b) => b.value - a.value)
 }
