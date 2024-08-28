@@ -193,7 +193,8 @@ export const interact = (x: number, y: number) => {
             selected = null
 
             spawn()
-            // spawn()
+
+            playKing()
         }
         else {
             // Move isn't possible, deselect instead
@@ -220,8 +221,9 @@ export const interact = (x: number, y: number) => {
             }
             else {
                 spawn()
-                // spawn()
             }
+
+            playKing()
         }
         else {
             // Merge isn't possible, select instead
@@ -236,8 +238,8 @@ export const interact = (x: number, y: number) => {
 }
 
 export const playKing = () => {
-    let x0 = Settings.outOfBounds
-    let y0 = Settings.outOfBounds
+    let x0: number = Settings.outOfBounds
+    let y0: number = Settings.outOfBounds
     let boardFull = ShortBool.TRUE
 
     for (let y = 0; y < Settings.boardHeight; ++y) {
@@ -270,6 +272,9 @@ export const playKing = () => {
                 canMove.push({ x, y })
             }
             else {
+                // Move is still in progress, don't take the piece
+                if (occupied && occupied.x === x && occupied.y === y) return
+
                 canTake.push({ x, y, value: piece.value })
             }
         }
@@ -285,5 +290,27 @@ export const playKing = () => {
     putMove(1, 1)
 
     // Sort by value, descending
+    // FIXME shuffle
     canTake.sort((a, b) => b.value - a.value)
+
+    const highestValue = canTake[0]?.value ?? 0
+
+    // Take only when the target piece is valuable, OR
+    // the target piece is present, AND the king is surrounded, AND the board isn't full.
+    if (highestValue >= Settings.alwaysTake ||
+        (highestValue && !canMove.length && !boardFull)) {
+
+        const { x, y } = canTake[0]!
+
+        if (selected && selected.x === x && selected.y === y) selected = null
+
+        board[y]![x] = board[y0]![x0]
+        board[y0]![x0] = null
+    }
+    else if (canMove.length) {
+        const { x, y } = canMove[randomUint32LessThan(prng, canMove.length)]!
+
+        board[y]![x] = board[y0]![x0]
+        board[y0]![x0] = null
+    }
 }
