@@ -9,6 +9,8 @@ export const enum Settings {
     boardWidth = 4,
     boardHeight = 4,
     kingValue = 10,
+    outOfBounds = 9,
+    alwaysTake = 7,
 }
 
 export const enum PieceSpecies {
@@ -231,4 +233,25 @@ export const interact = (x: number, y: number) => {
     else if (board[y]![x]) {
         selected = { x, y }
     }
+}
+
+export const playKing = () => {
+    let x0 = Settings.outOfBounds
+    let y0 = Settings.outOfBounds
+    let boardFull = ShortBool.TRUE
+
+    for (let y = 0; y < Settings.boardHeight; ++y) {
+        for (let x = 0; x < Settings.boardWidth; ++x) {
+            const piece = board[y]![x]
+            if (!piece) {
+                boardFull = ShortBool.FALSE
+            }
+            else if (piece.value === Settings.kingValue) {
+                x0 = x
+                y0 = y
+            }
+        }
+    }
+
+    if (x0 === Settings.outOfBounds) return // King not found
 }
