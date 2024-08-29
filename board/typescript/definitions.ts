@@ -60,6 +60,14 @@ export const reset = (seed?: number) => {
 
 reset()
 
+const getRandomElement = <T>(array: T[]): Optional<T> => {
+    switch (array.length) {
+        case 0: return
+        case 1: return array[0]
+    }
+    return array[randomUint32LessThan(prng, array.length)]
+}
+
 export const spawn = () => {
     const vacant: ReadonlyVec2[] = []
 
@@ -76,10 +84,10 @@ export const spawn = () => {
         return
     }
 
-    const { x, y } = vacant[randomUint32LessThan(prng, vacant.length)]!
+    const { x, y } = getRandomElement(vacant)!
 
     if (vacated && vacated.x === x && vacated.y === y) {
-        const { x, y } = vacant[randomUint32LessThan(prng, vacant.length)]!
+        const { x, y } = getRandomElement(vacant)!
         board[y]![x] = { species: PieceSpecies.knight, value: 1 }
         spawned = { x, y }
         return
@@ -257,8 +265,8 @@ export const playKing = () => {
 
     if (x0 === Settings.outOfBounds) return // King not found
 
-    const canMove: IVec2[] = []
-    const canTake: (IVec2 & { value: number })[] = []
+    const possibleMoves: IVec2[] = []
+    let possibleTakes: (IVec2 & { value: number })[] = []
 
     const putMove = (Δx: number, Δy: number) => {
         const x = x0 + Δx
@@ -269,13 +277,13 @@ export const playKing = () => {
 
             const piece = board[y]![x]
             if (!piece) {
-                canMove.push({ x, y })
+                possibleMoves.push({ x, y })
             }
             else {
                 // Move is still in progress, don't take the piece
                 if (occupied && occupied.x === x && occupied.y === y) return
 
-                canTake.push({ x, y, value: piece.value })
+                possibleTakes.push({ x, y, value: piece.value })
             }
         }
     }
@@ -290,25 +298,26 @@ export const playKing = () => {
     putMove(1, 1)
 
     // Sort by value, descending
-    // FIXME shuffle
-    canTake.sort((a, b) => b.value - a.value)
+    possibleTakes.sort((a, b) => b.value - a.value)
 
-    const highestValue = canTake[0]?.value ?? 0
+    const highestValue = possibleTakes[0]?.value ?? 0
+
+    possibleTakes = possibleTakes.filter(({ value }) => value === highestValue)
 
     // Take only when the target piece is valuable, OR
     // the target piece is present, AND the king is surrounded, AND the board isn't full.
     if (highestValue >= Settings.alwaysTake ||
-        (highestValue && !canMove.length && !boardFull)) {
+        (highestValue && !possibleMoves.length && !boardFull)) {
 
-        const { x, y } = canTake[0]!
+        const { x, y } = getRandomElement(possibleTakes)!
 
         if (selected && selected.x === x && selected.y === y) selected = null
 
         board[y]![x] = board[y0]![x0]
         board[y0]![x0] = null
     }
-    else if (canMove.length) {
-        const { x, y } = canMove[randomUint32LessThan(prng, canMove.length)]!
+    else if (possibleMoves.length) {
+        const { x, y } = getRandomElement(possibleMoves)!
 
         board[y]![x] = board[y0]![x0]
         board[y0]![x0] = null
