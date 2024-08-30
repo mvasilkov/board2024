@@ -25,8 +25,15 @@
           position="0 0 -1" material="color: #fff; opacity: 0.9; shader: flat" hide-on-enter-vr></a-entity>
       </a-entity>
 
-      <a-entity laser-controls="hand: right" raycaster="objects: .clickable; lineOpacity: 0" dakka>
+      <a-entity laser-controls="hand: right; model: false" raycaster="objects: .clickable; lineOpacity: 0" dakka>
         <a-entity copy-direction>
+          <a-cylinder position="0 0 -0.01" rotation="-90 0 0" radius="0.015" height="0.02" color="#333c57"></a-cylinder>
+          <a-box position="0 0 0.1" width="0.05" height="0.08" depth="0.2" color="#333c57"></a-box>
+          <a-box position="0 -0.09 0.14" width="0.03" height="0.1" depth="0.04" color="#333c57"></a-box>
+          <!-- Sights -->
+          <a-box position="0 0.045 0.015" width="0.005" height="0.01" depth="0.01" color="#333c57"></a-box>
+          <a-box position="-0.01 0.045 0.185" width="0.005" height="0.01" depth="0.01" color="#333c57"></a-box>
+          <a-box position="0.01 0.045 0.185" width="0.005" height="0.01" depth="0.01" color="#333c57"></a-box>
         </a-entity>
       </a-entity>
     </a-scene>
