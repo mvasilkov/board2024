@@ -3,11 +3,17 @@
 AFRAME.registerComponent('dakka', {
     init() {
         this.el.addEventListener('click', event => {
+            const visible = this.el.getAttribute('visible')
+            if (!visible) return
+
+            // Bullet start position
             const startPos = new THREE.Vector3()
             this.el.object3D.getWorldPosition(startPos)
 
+            // Bullet end position and distance
             const { point: endPos, distance } = event.detail.intersection
 
+            // Bullet entity
             const bullet = document.createElement('a-entity')
             bullet.setAttribute('geometry', {
                 primitive: 'sphere',
@@ -24,6 +30,38 @@ AFRAME.registerComponent('dakka', {
                 easing: 'linear',
             })
             this.el.sceneEl.appendChild(bullet)
+
+            // Bullet hit
+            bullet.addEventListener('animationcomplete', () => {
+                bullet.parentNode.removeChild(bullet)
+            })
         })
+    },
+})
+
+AFRAME.registerComponent('copy-direction', {
+    init() {
+        this._forward = new THREE.Vector3(0, 0, -1)
+        // Only update when these change
+        this._origin = new THREE.Vector3()
+        this._direction = new THREE.Vector3()
+    },
+
+    tick() {
+        const parent = this.el.parentNode
+        const parentOrigin = parent.components.raycaster.data.origin
+        const parentDirection = parent.components.raycaster.data.direction
+
+        if (!this._origin.equals(parentOrigin)) {
+            this._origin.copy(parentOrigin)
+
+            this.el.object3D.position.copy(parentOrigin)
+        }
+
+        if (!this._direction.equals(parentDirection)) {
+            this._direction.copy(parentDirection)
+
+            this.el.object3D.quaternion.setFromUnitVectors(this._forward, parentDirection)
+        }
     },
 })

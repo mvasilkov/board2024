@@ -25,7 +25,10 @@
           position="0 0 -1" material="color: #fff; opacity: 0.9; shader: flat" hide-on-enter-vr></a-entity>
       </a-entity>
 
-      <a-entity laser-controls="hand: right" raycaster="objects: .clickable" dakka></a-entity>
+      <a-entity laser-controls="hand: right" raycaster="objects: .clickable; lineOpacity: 0" dakka>
+        <a-entity copy-direction>
+        </a-entity>
+      </a-entity>
     </a-scene>
   </body>
 </html>
