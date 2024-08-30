@@ -7,8 +7,9 @@ AFRAME.registerComponent('dakka', {
             if (!visible) return
 
             // Bullet start position
-            const startPos = new THREE.Vector3()
-            this.el.object3D.getWorldPosition(startPos)
+            const origin = this.el.components.raycaster.data.origin
+            const startPos = new THREE.Vector3(origin.x, origin.y, origin.z)
+            this.el.object3D.localToWorld(startPos)
 
             // Bullet end position and distance
             const { point: endPos, distance } = event.detail.intersection
@@ -39,29 +40,30 @@ AFRAME.registerComponent('dakka', {
     },
 })
 
-AFRAME.registerComponent('copy-direction', {
+AFRAME.registerComponent('unfuck-direction', {
     init() {
-        this._forward = new THREE.Vector3(0, 0, -1)
-        // Only update when these change
-        this._origin = new THREE.Vector3()
-        this._direction = new THREE.Vector3()
+        const parent = this.el.parentNode
+
+        const direction = new THREE.Vector3(-0.5, -1.6, -1).normalize()
+        const origin = direction.clone().multiplyScalar(0.15)
+        const offset = direction.clone().multiplyScalar(0.1)
+
+        parent.setAttribute('raycaster', { direction, origin })
+
+        this.el.object3D.position.copy(offset)
+        this.el.object3D.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), direction)
+
+        this._origin = origin
     },
 
     tick() {
         const parent = this.el.parentNode
         const parentOrigin = parent.components.raycaster.data.origin
-        const parentDirection = parent.components.raycaster.data.direction
 
-        if (!this._origin.equals(parentOrigin)) {
-            this._origin.copy(parentOrigin)
+        if (this._origin.equals(parentOrigin)) return
 
-            this.el.object3D.position.copy(parentOrigin)
-        }
-
-        if (!this._direction.equals(parentDirection)) {
-            this._direction.copy(parentDirection)
-
-            this.el.object3D.quaternion.setFromUnitVectors(this._forward, parentDirection)
-        }
+        parentOrigin.x = this._origin.x
+        parentOrigin.y = this._origin.y
+        parentOrigin.z = this._origin.z
     },
 })
