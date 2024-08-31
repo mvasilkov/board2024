@@ -49,6 +49,14 @@ export class Particle {
                         break;
                     case 1:
                         pos.x += 10;
+                        break;
+                    case 2:
+                    case 3:
+                        pos.x -= 0.1;
+                        break;
+                    case 4:
+                    case 5:
+                        pos.x += 0.1;
                 }
             }
         }

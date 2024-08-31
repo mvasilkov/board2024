@@ -1,9 +1,8 @@
 'use strict'
 
-import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
+import { startMainloop } from './node_modules/natlib/scheduling/mainloop.js'
 
-import { pieceColors } from '../verlet/Piece.js'
-import { collection, createParticles } from './debug/debug.js'
+import { createParticles } from './debug/debug.js'
 import { con, scene } from './prelude.js'
 
 AFRAME.registerComponent('dakka', {
@@ -92,8 +91,27 @@ AFRAME.registerComponent('unfuck-direction', {
     },
 })
 
+const unproject = (x0, y0) => {
+    // The screen is 960 by 540 curved,
+    // height="9" radius="7.6394" theta-length="120" == 0.6666 pi radians
+    // 1 pixel == 0.01666 units
+
+    const theta = x0 / 960 * 0.6666 * Math.PI + 1.1666 * Math.PI
+
+    const x = 7.6394 * Math.cos(theta)
+    const y = 0.01666 * (540 - y0)
+    const z = 7.6394 * Math.sin(theta)
+
+    return [x, y, z]
+}
+
 AFRAME.registerComponent('canvas-screen', {
     init() {
+        const targets = document.querySelectorAll('.target')
+        targets.forEach(target => {
+            target.setAttribute('visible', true)
+        })
+
         const update = () => {
             scene.update()
         }
@@ -101,15 +119,14 @@ AFRAME.registerComponent('canvas-screen', {
         const render = t => {
             scene.vertices.forEach(v => v.interpolate(t));
 
-            for (let color = 0; color < pieceColors.length; ++color) {
-                con.beginPath();
-                collection.coloredPieces[color].forEach(p => {
-                    con.moveTo(p.interpolated.x + p.radius, p.interpolated.y);
-                    con.arc(p.interpolated.x, p.interpolated.y, p.radius, 0, 2 * Math.PI);
-                });
-                con.fillStyle = pieceColors[color];
-                con.fill();
-            }
+            // con.beginPath();
+            scene.vertices.forEach((p, index) => {
+                // con.moveTo(p.interpolated.x + p.radius, p.interpolated.y);
+                // con.arc(p.interpolated.x, p.interpolated.y, p.radius, 0, 2 * Math.PI);
+                targets[index].object3D.position.set(...unproject(p.interpolated.x, p.interpolated.y))
+            });
+            // con.fillStyle = '#fff';
+            // con.fill();
         }
 
         createParticles()
