@@ -42,28 +42,31 @@ AFRAME.registerComponent('dakka', {
 
 AFRAME.registerComponent('unfuck-direction', {
     init() {
-        const parent = this.el.parentNode
+        this._initialized = false
+    },
 
-        const direction = new THREE.Vector3(-0.5, -1.6, -1).normalize()
-        const origin = direction.clone().multiplyScalar(0.15)
-        const offset = direction.clone().multiplyScalar(0.1)
+    tick() {
+        let parent
+
+        if (this._initialized || !(parent = this.el.parentNode).components['laser-controls'].modelReady) return
+
+        const parentOrigin = parent.components.raycaster.data.origin
+        const parentDirection = parent.components.raycaster.data.direction
+
+        const direction = new THREE.Vector3(parentDirection.x, parentDirection.y, parentDirection.z)
+        direction.applyAxisAngle(new THREE.Vector3(1, 0, 0), -0.2 * Math.PI)
+
+        const origin = direction.clone().multiplyScalar(0.15).add(parentOrigin)
+        const offset = direction.clone().multiplyScalar(0.1).add(parentOrigin)
 
         parent.setAttribute('raycaster', { direction, origin })
 
         this.el.object3D.position.copy(offset)
         this.el.object3D.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), direction)
 
-        this._origin = origin
-    },
+        const controllerModel = parent.getObject3D('mesh')
+        if (controllerModel) controllerModel.visible = false
 
-    tick() {
-        const parent = this.el.parentNode
-        const parentOrigin = parent.components.raycaster.data.origin
-
-        if (this._origin.equals(parentOrigin)) return
-
-        parentOrigin.x = this._origin.x
-        parentOrigin.y = this._origin.y
-        parentOrigin.z = this._origin.z
+        this._initialized = true
     },
 })
