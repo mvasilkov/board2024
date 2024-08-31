@@ -4,6 +4,8 @@
 // for a fully-featured version.
 import { Vec2 } from '../../node_modules/natlib/Vec2.js';
 import { lerp } from '../../node_modules/natlib/interpolation.js';
+import { Mulberry32 } from '../../node_modules/natlib/prng/Mulberry32.js';
+const prng = new Mulberry32(1);
 export class Particle {
     body;
     position;
@@ -31,7 +33,7 @@ export class Particle {
         const x = pos.x;
         const y = pos.y;
         pos.x += (x - old.x) * this.viscosity;
-        pos.y += (y - old.y) * this.viscosity;
+        pos.y += (y - old.y) * this.viscosity + this.gravity;
         old.set(x, y);
         // Scene bounds
         const { height, width } = this.body.scene;
@@ -39,6 +41,16 @@ export class Particle {
             pos.y = this.radius;
         else if (pos.y > height - this.radius) {
             pos.y = height - this.radius;
+            if ((prng.randomUint32() & 0b1111) === 0) {
+                pos.y -= 20;
+                switch (prng.randomUint32() & 0b111) {
+                    case 0:
+                        pos.x -= 10;
+                        break;
+                    case 1:
+                        pos.x += 10;
+                }
+            }
         }
         if (pos.x < this.radius)
             pos.x = this.radius;

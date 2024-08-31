@@ -7,11 +7,11 @@ let collection;
 export const createParticles = () => {
     const prng = new Mulberry32(999);
     collection = new Collection(scene);
-    for (let n = 0; n < 999; ++n) {
+    for (let n = 0; n < 13; ++n) {
         const color = randomUint32LessThan(prng, pieceColors.length);
         const x = randomUint32LessThan(prng, 960 /* Settings.screenWidth */);
         const y = randomUint32LessThan(prng, 540 /* Settings.screenHeight */);
-        new Piece(color, collection, x, y, 11);
+        new Piece(color, collection, x, y, 22);
     }
 };
 export const paintParticles = () => {
