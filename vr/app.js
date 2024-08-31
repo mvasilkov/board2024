@@ -1,11 +1,13 @@
 'use strict'
 
-import { con } from './prelude.js'
+import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
+
+import { pieceColors } from '../verlet/Piece.js'
+import { collection, createParticles } from './debug/debug.js'
+import { con, scene } from './prelude.js'
 
 AFRAME.registerComponent('dakka', {
     init() {
-        this._screen = document.querySelector('[canvas-screen]')
-
         const blast = event => {
             const visible = this.el.getAttribute('visible')
             if (!visible) return
@@ -54,9 +56,6 @@ AFRAME.registerComponent('dakka', {
 
         con.fillStyle = '#f00'
         con.fillRect(x - 4, y - 4, 8, 8)
-
-        const texture = this._screen.getObject3D('mesh').material.map
-        if (texture) texture.needsUpdate = true
     },
 })
 
@@ -95,7 +94,33 @@ AFRAME.registerComponent('unfuck-direction', {
 
 AFRAME.registerComponent('canvas-screen', {
     init() {
+        const update = () => {
+            scene.update()
+        }
+
+        const render = t => {
+            scene.vertices.forEach(v => v.interpolate(t));
+
+            for (let color = 0; color < pieceColors.length; ++color) {
+                con.beginPath();
+                collection.coloredPieces[color].forEach(p => {
+                    con.moveTo(p.interpolated.x + p.radius, p.interpolated.y);
+                    con.arc(p.interpolated.x, p.interpolated.y, p.radius, 0, 2 * Math.PI);
+                });
+                con.fillStyle = pieceColors[color];
+                con.fill();
+            }
+        }
+
+        createParticles()
+        startMainloop(update, render)
+
         con.fillStyle = '#000'
         con.fillRect(0, 0, 960, 540)
+    },
+
+    tick() {
+        // const texture = this.el.getObject3D('mesh').material.map
+        // if (texture) texture.needsUpdate = true
     },
 })

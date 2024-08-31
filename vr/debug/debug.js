@@ -3,7 +3,7 @@ import { Mulberry32 } from '../../node_modules/natlib/prng/Mulberry32.js';
 import { randomUint32LessThan } from '../../node_modules/natlib/prng/prng.js';
 import { con, scene } from '../prelude.js';
 import { Collection, Piece, pieceColors } from '../verlet/Piece.js';
-let collection;
+export let collection;
 export const createParticles = () => {
     const prng = new Mulberry32(999);
     collection = new Collection(scene);
