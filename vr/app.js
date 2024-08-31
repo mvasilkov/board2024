@@ -1,6 +1,6 @@
 'use strict'
 
-import { CanvasHandle } from './node_modules/natlib/canvas/CanvasHandle.js'
+import { con } from './prelude.js'
 
 AFRAME.registerComponent('dakka', {
     init() {
@@ -52,8 +52,8 @@ AFRAME.registerComponent('dakka', {
         const x = 960 * (1 - uv.x)
         const y = 540 * (1 - uv.y)
 
-        this._screen.components['canvas-screen']._con.fillStyle = '#f00'
-        this._screen.components['canvas-screen']._con.fillRect(x - 4, y - 4, 8, 8)
+        con.fillStyle = '#f00'
+        con.fillRect(x - 4, y - 4, 8, 8)
 
         const texture = this._screen.getObject3D('mesh').material.map
         if (texture) texture.needsUpdate = true
@@ -95,11 +95,7 @@ AFRAME.registerComponent('unfuck-direction', {
 
 AFRAME.registerComponent('canvas-screen', {
     init() {
-        const ch = new CanvasHandle(document.querySelector('#canvas'), 960, 540, 2, (con, width, height) => {
-            con.fillStyle = '#000'
-            con.fillRect(0, 0, width, height)
-        })
-
-        this._con = ch.con
+        con.fillStyle = '#000'
+        con.fillRect(0, 0, 960, 540)
     },
 })
