@@ -2,6 +2,8 @@
 
 AFRAME.registerComponent('dakka', {
     init() {
+        this._screen = document.querySelector('[canvas-screen]')
+
         this.el.addEventListener('click', event => {
             const visible = this.el.getAttribute('visible')
             if (!visible) return
@@ -12,7 +14,7 @@ AFRAME.registerComponent('dakka', {
             this.el.object3D.localToWorld(startPos)
 
             // Bullet end position and distance
-            const { point: endPos, distance } = event.detail.intersection
+            const { point: endPos, distance, uv } = event.detail.intersection
 
             // Bullet entity
             const bullet = document.createElement('a-entity')
@@ -35,8 +37,22 @@ AFRAME.registerComponent('dakka', {
             // Bullet hit
             bullet.addEventListener('animationcomplete', () => {
                 bullet.parentNode.removeChild(bullet)
+
+                this.bulletHit(uv)
             })
         })
+    },
+
+    bulletHit(uv) {
+        console.log(uv)
+        const x = 960 * (1 - uv.x)
+        const y = 540 * (1 - uv.y)
+
+        this._screen.components['canvas-screen']._con.fillStyle = '#f00'
+        this._screen.components['canvas-screen']._con.fillRect(x - 4, y - 4, 8, 8)
+
+        const texture = this._screen.getObject3D('mesh').material.map
+        if (texture) texture.needsUpdate = true
     },
 })
 
@@ -67,6 +83,19 @@ AFRAME.registerComponent('unfuck-direction', {
         const controllerModel = parent.getObject3D('mesh')
         if (controllerModel) controllerModel.visible = false
 
+        this.el.setAttribute('visible', true)
+
         this._initialized = true
+    },
+})
+
+AFRAME.registerComponent('canvas-screen', {
+    init() {
+        const ch = new CanvasHandle(document.querySelector('#canvas'), 960, 540, 2, (con, width, height) => {
+            con.fillStyle = '#000'
+            con.fillRect(0, 0, width, height)
+        })
+
+        this._con = ch.con
     },
 })
