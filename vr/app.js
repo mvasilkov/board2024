@@ -1,5 +1,7 @@
 'use strict'
 
+import { CanvasHandle } from './node_modules/natlib/canvas/CanvasHandle.js'
+
 AFRAME.registerComponent('dakka', {
     init() {
         this._screen = document.querySelector('[canvas-screen]')
@@ -47,7 +49,6 @@ AFRAME.registerComponent('dakka', {
     },
 
     bulletHit(uv) {
-        console.log(uv)
         const x = 960 * (1 - uv.x)
         const y = 540 * (1 - uv.y)
 
