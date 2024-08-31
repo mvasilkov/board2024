@@ -4,7 +4,7 @@ AFRAME.registerComponent('dakka', {
     init() {
         this._screen = document.querySelector('[canvas-screen]')
 
-        this.el.addEventListener('click', event => {
+        const blast = event => {
             const visible = this.el.getAttribute('visible')
             if (!visible) return
 
@@ -29,7 +29,7 @@ AFRAME.registerComponent('dakka', {
             bullet.setAttribute('animation', {
                 property: 'position',
                 to: endPos,
-                dur: 100 * distance,
+                dur: 50 * distance,
                 easing: 'linear',
             })
             this.el.sceneEl.appendChild(bullet)
@@ -40,7 +40,10 @@ AFRAME.registerComponent('dakka', {
 
                 this.bulletHit(uv)
             })
-        })
+        }
+
+        this.el.addEventListener('click', blast)
+        this.el.addEventListener('triggerdown', blast)
     },
 
     bulletHit(uv) {
@@ -70,7 +73,7 @@ AFRAME.registerComponent('unfuck-direction', {
         const parentDirection = parent.components.raycaster.data.direction
 
         const direction = new THREE.Vector3(parentDirection.x, parentDirection.y, parentDirection.z)
-        direction.applyAxisAngle(new THREE.Vector3(1, 0, 0), -0.2 * Math.PI)
+        direction.applyAxisAngle(new THREE.Vector3(1, 0, 0), -0.1 * Math.PI)
 
         const origin = direction.clone().multiplyScalar(0.15).add(parentOrigin)
         const offset = direction.clone().multiplyScalar(0.1).add(parentOrigin)

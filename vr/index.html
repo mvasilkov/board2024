@@ -21,7 +21,7 @@
       <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#a7f070"></a-plane>
       <a-sky color="#41a6f6"></a-sky> -->
 
-      <a-curvedimage src="#canvas" class="clickable" position="0 4.5 -4" height="9" radius="7.6394" theta-length="120"
+      <a-curvedimage src="#canvas" class="clickable" position="0 4.5 0" height="9" radius="7.6394" theta-length="120"
         theta-start="120" canvas-screen></a-curvedimage>
 
       <a-entity camera="fov: 85" look-controls="pointerLockEnabled: true" wasd-controls position="0 1.6 0">
@@ -30,6 +30,18 @@
       </a-entity>
 
       <a-entity laser-controls="hand: right; model: true" raycaster="objects: .clickable; lineOpacity: 0" dakka>
+        <a-entity unfuck-direction visible="false">
+          <a-cylinder position="0 0 -0.01" rotation="-90 0 0" radius="0.015" height="0.02" color="#333c57"></a-cylinder>
+          <a-box position="0 0 0.1" width="0.05" height="0.08" depth="0.2" color="#333c57"></a-box>
+          <a-box position="0 -0.09 0.14" width="0.03" height="0.1" depth="0.04" color="#333c57"></a-box>
+          <!-- Sights -->
+          <a-box position="0 0.045 0.015" width="0.005" height="0.01" depth="0.01" color="#333c57"></a-box>
+          <a-box position="-0.01 0.045 0.185" width="0.005" height="0.01" depth="0.01" color="#333c57"></a-box>
+          <a-box position="0.01 0.045 0.185" width="0.005" height="0.01" depth="0.01" color="#333c57"></a-box>
+        </a-entity>
+      </a-entity>
+
+      <a-entity laser-controls="hand: left; model: true" raycaster="objects: .clickable; lineOpacity: 0" dakka>
         <a-entity unfuck-direction visible="false">
           <a-cylinder position="0 0 -0.01" rotation="-90 0 0" radius="0.015" height="0.02" color="#333c57"></a-cylinder>
           <a-box position="0 0 0.1" width="0.05" height="0.08" depth="0.2" color="#333c57"></a-box>
