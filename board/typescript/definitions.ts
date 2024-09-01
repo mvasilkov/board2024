@@ -10,7 +10,10 @@ export const enum Settings {
     boardHeight = 4,
     kingValue = 10,
     outOfBounds = 9,
-    alwaysTake = 7,
+    // Thresholds
+    bishopThreshold = 4, // '16'
+    rookThreshold = 6, // '64'
+    queenThreshold = 8, // '256'
 }
 
 export const enum PieceSpecies {
@@ -49,6 +52,10 @@ export let spawned: Optional<ReadonlyVec2>
 export let kingVacated: Optional<ReadonlyVec2>
 /** Cell occupied by king */
 export let kingOccupied: Optional<ReadonlyVec2>
+/** Highest value achieved */
+export let highestValue: number
+/** Highest species spawned */
+export let highestSpecies: PieceSpecies
 let ended: ExtendedBool
 let prng: IPrng32
 
@@ -60,6 +67,8 @@ export const reset = (seed?: number) => {
     spawned = null
     kingVacated = null
     kingOccupied = null
+    highestValue = 1
+    highestSpecies = PieceSpecies.knight
     ended = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
@@ -92,14 +101,27 @@ export const spawn = () => {
 
     const { x, y } = getRandomElement(vacant)!
 
+    let value = 1
+    switch (randomUint32LessThan(prng, 9)) {
+        case 0:
+        case 1:
+            // 22.2% chance
+            if (highestValue >= Settings.bishopThreshold) value = 2
+            break
+
+        case 2:
+            // 11.1% chance
+            if (highestValue >= Settings.rookThreshold) value = 3
+    }
+
     if (vacated && vacated.x === x && vacated.y === y) {
         const { x, y } = getRandomElement(vacant)!
-        board[y]![x] = { species: PieceSpecies.knight, value: 1 }
+        board[y]![x] = { species: PieceSpecies.knight, value }
         spawned = { x, y }
         return
     }
 
-    board[y]![x] = { species: PieceSpecies.knight, value: 1 }
+    board[y]![x] = { species: PieceSpecies.knight, value }
     spawned = { x, y }
 }
 
@@ -226,6 +248,8 @@ export const interact = (x: number, y: number) => {
             occupied = { x, y }
             selected = null
 
+            if (value > highestValue) highestValue = value
+
             const nextMove = getMoves(x, y).some(move => board[move.y]![move.x]?.value === value)
             if (nextMove) {
                 // The piece can continue the chain. Select it
@@ -249,6 +273,9 @@ export const interact = (x: number, y: number) => {
     }
 }
 
+const pieceWorth = (piece: Piece): number =>
+    piece.species + piece.value
+
 export const playKing = () => {
     let x0: number = Settings.outOfBounds
     let y0: number = Settings.outOfBounds
@@ -270,7 +297,7 @@ export const playKing = () => {
     if (x0 === Settings.outOfBounds) return // King not found
 
     const possibleMoves: IVec2[] = []
-    let possibleTakes: (IVec2 & { value: number })[] = []
+    let possibleTakes: (IVec2 & { worth: number })[] = []
 
     const putMove = (Δx: number, Δy: number) => {
         const x = x0 + Δx
@@ -287,7 +314,7 @@ export const playKing = () => {
                 // Move is still in progress, don't take the piece
                 if (occupied && occupied.x === x && occupied.y === y) return
 
-                possibleTakes.push({ x, y, value: piece.value })
+                possibleTakes.push({ x, y, worth: pieceWorth(piece) })
             }
         }
     }
@@ -301,15 +328,15 @@ export const playKing = () => {
     putMove(1, 0)
     putMove(1, 1)
 
-    // Sort by value, descending
-    possibleTakes.sort((a, b) => b.value - a.value)
+    // Sort by worth, descending
+    possibleTakes.sort((a, b) => b.worth - a.worth)
 
-    const highestValue = possibleTakes[0]?.value ?? 0
+    const highestWorth = possibleTakes[0]?.worth ?? 0
 
-    possibleTakes = possibleTakes.filter(({ value }) => value === highestValue)
+    possibleTakes = possibleTakes.filter(({ worth }) => worth === highestWorth)
 
     // Take only when the target piece is present, AND the king is surrounded, AND the board isn't full.
-    if (highestValue && !possibleMoves.length && !boardFull) {
+    if (highestWorth && !possibleMoves.length && !boardFull) {
         const { x, y } = getRandomElement(possibleTakes)!
 
         if (selected && selected.x === x && selected.y === y) selected = null
