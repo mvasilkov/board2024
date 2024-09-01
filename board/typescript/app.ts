@@ -3,8 +3,8 @@
 import { ShortBool } from '../node_modules/natlib/prelude.js'
 
 import { board, PieceSpecies, Settings, spawn } from './definitions.js'
-// import { renderBoard } from './rendering.js'
-import { renderBoard } from './debug.js'
+import { renderBoard } from './rendering.js'
+// import { renderBoard } from './debug.js'
 import { createStyles } from './rendering.js'
 
 createStyles()

@@ -45,6 +45,10 @@ export let vacated: Optional<ReadonlyVec2>
 export let occupied: Optional<ReadonlyVec2>
 /** Position of the last spawned piece */
 export let spawned: Optional<ReadonlyVec2>
+/** Cell vacated by king */
+export let kingVacated: Optional<ReadonlyVec2>
+/** Cell occupied by king */
+export let kingOccupied: Optional<ReadonlyVec2>
 let ended: ExtendedBool
 let prng: IPrng32
 
@@ -54,6 +58,8 @@ export const reset = (seed?: number) => {
     vacated = null
     occupied = null
     spawned = null
+    kingVacated = null
+    kingOccupied = null
     ended = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
@@ -201,7 +207,6 @@ export const interact = (x: number, y: number) => {
             selected = null
 
             spawn()
-
             playKing()
         }
         else {
@@ -229,9 +234,8 @@ export const interact = (x: number, y: number) => {
             }
             else {
                 spawn()
+                playKing()
             }
-
-            playKing()
         }
         else {
             // Merge isn't possible, select instead
@@ -304,22 +308,23 @@ export const playKing = () => {
 
     possibleTakes = possibleTakes.filter(({ value }) => value === highestValue)
 
-    // Take only when the target piece is valuable, OR
-    // the target piece is present, AND the king is surrounded, AND the board isn't full.
-    if (highestValue >= Settings.alwaysTake ||
-        (highestValue && !possibleMoves.length && !boardFull)) {
-
+    // Take only when the target piece is present, AND the king is surrounded, AND the board isn't full.
+    if (highestValue && !possibleMoves.length && !boardFull) {
         const { x, y } = getRandomElement(possibleTakes)!
 
         if (selected && selected.x === x && selected.y === y) selected = null
 
         board[y]![x] = board[y0]![x0]
         board[y0]![x0] = null
+        kingVacated = { x: x0, y: y0 }
+        kingOccupied = { x, y }
     }
     else if (possibleMoves.length) {
         const { x, y } = getRandomElement(possibleMoves)!
 
         board[y]![x] = board[y0]![x0]
         board[y0]![x0] = null
+        kingVacated = { x: x0, y: y0 }
+        kingOccupied = { x, y }
     }
 }

@@ -2,7 +2,7 @@
 
 import type { ExtendedBool, ShortBool } from '../node_modules/natlib/prelude'
 
-import { board, getMovesTable, interact, occupied, PieceSpecies, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
+import { board, getMovesTable, interact, kingOccupied, kingVacated, occupied, PieceSpecies, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
 import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 
 const pieceColors = [
@@ -102,8 +102,9 @@ let patternIndex = 0
 const getPatternSVG = (background: string, color: string) =>
     `<pattern id="pa${++patternIndex}" patternTransform="scale(3.4)" patternUnits="userSpaceOnUse" width="4" height="4"><rect width="4" height="4" fill="${background}"/><path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" stroke="${color}" stroke-width="1.5"/></pattern>`
 
-let lastVacated: typeof vacated
-let lastSpawned: typeof spawned
+let vacatedLast: typeof vacated
+let spawnedLast: typeof spawned
+let kingVacatedLast: typeof kingVacated
 
 export const createPiece = (x: number, y: number, species: PieceSpecies, value: number) => {
     const piece = document.createElement('div')
@@ -138,16 +139,22 @@ export const createPiece = (x: number, y: number, species: PieceSpecies, value: 
     // Change to setHTMLUnsafe() in 2025
     piece.innerHTML = svg
 
-    if (vacated && vacated !== lastVacated && occupied?.x === x && occupied?.y === y) {
+    if (vacated && vacated !== vacatedLast && occupied?.x === x && occupied?.y === y) {
         // easeOutQuad
         piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) t${vacated.x}${vacated.y}${x}${y}`
-        lastVacated = vacated
+        vacatedLast = vacated
     }
 
-    else if (spawned && spawned !== lastSpawned && spawned?.x === x && spawned?.y === y) {
+    else if (spawned && spawned !== spawnedLast && spawned?.x === x && spawned?.y === y) {
         // easeOutQuad
         piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) sp`
-        lastSpawned = spawned
+        spawnedLast = spawned
+    }
+
+    if (kingVacated && kingVacated !== kingVacatedLast && kingOccupied?.x === x && kingOccupied?.y === y) {
+        // easeOutQuad
+        piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) t${kingVacated.x}${kingVacated.y}${x}${y}`
+        kingVacatedLast = kingVacated
     }
 
     // Outline
