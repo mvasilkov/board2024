@@ -92,6 +92,10 @@ type IState = [
     yOccupied: number,
     xSpawned: number,
     ySpawned: number,
+    xKingVacated: number,
+    yKingVacated: number,
+    xKingOccupied: number,
+    yKingOccupied: number,
     highestValue: number,
     highestSpecies: PieceSpecies,
     seed: number,
@@ -106,6 +110,10 @@ export const takeState = (): IState => {
         occupied?.y ?? Settings.outOfBounds,
         spawned?.x ?? Settings.outOfBounds,
         spawned?.y ?? Settings.outOfBounds,
+        kingVacated?.x ?? Settings.outOfBounds,
+        kingVacated?.y ?? Settings.outOfBounds,
+        kingOccupied?.x ?? Settings.outOfBounds,
+        kingOccupied?.y ?? Settings.outOfBounds,
         highestValue,
         highestSpecies,
         prng.state,
@@ -121,6 +129,10 @@ export const restoreState = (state: IState) => {
         yOccupied,
         xSpawned,
         ySpawned,
+        xKingVacated,
+        yKingVacated,
+        xKingOccupied,
+        yKingOccupied,
         _highestValue,
         _highestSpecies,
         seed,
@@ -133,6 +145,8 @@ export const restoreState = (state: IState) => {
     vacated = xVacated === Settings.outOfBounds ? null : { x: xVacated, y: yVacated }
     occupied = xOccupied === Settings.outOfBounds ? null : { x: xOccupied, y: yOccupied }
     spawned = xSpawned === Settings.outOfBounds ? null : { x: xSpawned, y: ySpawned }
+    kingVacated = xKingVacated === Settings.outOfBounds ? null : { x: xKingVacated, y: yKingVacated }
+    kingOccupied = xKingOccupied === Settings.outOfBounds ? null : { x: xKingOccupied, y: yKingOccupied }
 
     highestValue = _highestValue
     highestSpecies = _highestSpecies
@@ -152,6 +166,9 @@ export const spawn = () => {
     for (let y = 0; y < Settings.boardHeight; ++y) {
         for (let x = 0; x < Settings.boardWidth; ++x) {
             if (!board[y]![x]) {
+                // Move is still in progress, don't spawn there
+                if (kingVacated && kingVacated.x === x && kingVacated.y === y) continue
+
                 vacant.push({ x, y })
             }
         }
@@ -318,8 +335,8 @@ export const interact = (x: number, y: number) => {
             occupied = { x, y }
             selected = null
 
-            spawn()
             playKing()
+            spawn()
         }
         else {
             // Move isn't possible, deselect instead
@@ -348,8 +365,8 @@ export const interact = (x: number, y: number) => {
                 selected = { x, y }
             }
             else {
-                spawn()
                 playKing()
+                spawn()
             }
         }
         else {
@@ -370,13 +387,13 @@ const pieceWorth = (piece: Piece): number =>
 export const playKing = () => {
     let x0: number = Settings.outOfBounds
     let y0: number = Settings.outOfBounds
-    let boardFull = ShortBool.TRUE
+    let availableCells = 0
 
     for (let y = 0; y < Settings.boardHeight; ++y) {
         for (let x = 0; x < Settings.boardWidth; ++x) {
             const piece = board[y]![x]
             if (!piece) {
-                boardFull = ShortBool.FALSE
+                ++availableCells
             }
             else if (piece.value === Settings.kingValue) {
                 x0 = x
@@ -385,7 +402,12 @@ export const playKing = () => {
         }
     }
 
-    if (x0 === Settings.outOfBounds) return // King not found
+    // King not found, OR the board is full, OR it will be full after the next spawn.
+    if (x0 === Settings.outOfBounds || availableCells === 0 || availableCells === 1) {
+        kingVacated = null
+        kingOccupied = null
+        return
+    }
 
     const possibleMoves: IVec2[] = []
     let possibleTakes: (IVec2 & { worth: number })[] = []
@@ -403,8 +425,7 @@ export const playKing = () => {
             }
             else {
                 // Move is still in progress, don't take the piece
-                if ((occupied && occupied.x === x && occupied.y === y) ||
-                    (spawned && spawned.x === x && spawned.y === y)) return
+                if (occupied && occupied.x === x && occupied.y === y) return
 
                 possibleTakes.push({ x, y, worth: pieceWorth(piece) })
             }
@@ -428,7 +449,7 @@ export const playKing = () => {
     possibleTakes = possibleTakes.filter(({ worth }) => worth === highestWorth)
 
     // Take only when the target piece is present, AND the king is surrounded, AND the board isn't full.
-    if (highestWorth && !possibleMoves.length && !boardFull) {
+    if (highestWorth && !possibleMoves.length /* && !boardFull */) {
         const { x, y } = getRandomElement(possibleTakes)!
 
         if (selected && selected.x === x && selected.y === y) selected = null
