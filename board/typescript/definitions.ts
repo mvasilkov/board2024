@@ -99,7 +99,32 @@ export const spawn = () => {
         return
     }
 
-    const { x, y } = getRandomElement(vacant)!
+    let species = PieceSpecies.knight
+    switch (randomUint32LessThan(prng, 9)) {
+        case 0:
+        case 1:
+        case 2:
+            // 33.3% chance
+            if (highestValue >= Settings.bishopThreshold) species = PieceSpecies.bishop
+            break
+
+        case 3:
+        case 4:
+            // 22.2% chance
+            if (highestValue >= Settings.rookThreshold) species = PieceSpecies.rook
+            break
+
+        case 5:
+            // 11.1% chance
+            if (highestValue >= Settings.queenThreshold) species = PieceSpecies.queen
+    }
+
+    // Guaranteed pieces
+    if (highestValue >= Settings.queenThreshold && highestSpecies < PieceSpecies.queen) species = PieceSpecies.queen
+    else if (highestValue >= Settings.rookThreshold && highestSpecies < PieceSpecies.rook) species = PieceSpecies.rook
+    else if (highestValue >= Settings.bishopThreshold && highestSpecies < PieceSpecies.bishop) species = PieceSpecies.bishop
+
+    if (species > highestSpecies) highestSpecies = species
 
     let value = 1
     switch (randomUint32LessThan(prng, 9)) {
@@ -114,14 +139,16 @@ export const spawn = () => {
             if (highestValue >= Settings.rookThreshold) value = 3
     }
 
+    const { x, y } = getRandomElement(vacant)!
+
     if (vacated && vacated.x === x && vacated.y === y) {
         const { x, y } = getRandomElement(vacant)!
-        board[y]![x] = { species: PieceSpecies.knight, value }
+        board[y]![x] = { species, value }
         spawned = { x, y }
         return
     }
 
-    board[y]![x] = { species: PieceSpecies.knight, value }
+    board[y]![x] = { species, value }
     spawned = { x, y }
 }
 
@@ -242,6 +269,7 @@ export const interact = (x: number, y: number) => {
         const moves = getMovesTable(selected.x, selected.y)
 
         if (moves[y]![x]) {
+            board[y]![x] = board[selected.y]![selected.x]! // Copy species
             const value = ++board[y]![x].value
             board[selected.y]![selected.x] = null
             vacated = selected
@@ -312,7 +340,8 @@ export const playKing = () => {
             }
             else {
                 // Move is still in progress, don't take the piece
-                if (occupied && occupied.x === x && occupied.y === y) return
+                if ((occupied && occupied.x === x && occupied.y === y) ||
+                    (spawned && spawned.x === x && spawned.y === y)) return
 
                 possibleTakes.push({ x, y, worth: pieceWorth(piece) })
             }
