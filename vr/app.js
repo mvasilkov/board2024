@@ -132,8 +132,11 @@ AFRAME.registerComponent('canvas-screen', {
         createParticles()
         startMainloop(update, render)
 
-        con.fillStyle = '#000'
-        con.fillRect(0, 0, 960, 540)
+        // con.fillStyle = '#000'
+        // con.fillRect(0, 0, 960, 540)
+
+        const screenModel = this.el.getObject3D('mesh')
+        if (screenModel) screenModel.visible = false
     },
 
     tick() {
