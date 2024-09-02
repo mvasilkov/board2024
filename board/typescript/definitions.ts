@@ -3,7 +3,7 @@
 import type { IVec2 } from '../node_modules/natlib/Vec2'
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { Mulberry32 } from '../node_modules/natlib/prng/Mulberry32.js'
-import { randomUint32LessThan, type IPrng32 } from '../node_modules/natlib/prng/prng.js'
+import { randomUint32LessThan } from '../node_modules/natlib/prng/prng.js'
 
 export const enum Settings {
     boardWidth = 4,
@@ -39,6 +39,15 @@ const createBoard = <T>(): Board<T> => {
     ]
 }
 
+const copyBoard = <T>(board: Board<T>): Board<T> => {
+    return [
+        board[0].slice() as BoardRow<T>,
+        board[1].slice() as BoardRow<T>,
+        board[2].slice() as BoardRow<T>,
+        board[3].slice() as BoardRow<T>,
+    ]
+}
+
 export let board: Board<Piece>
 /** Selected cell */
 export let selected: Optional<ReadonlyVec2>
@@ -57,7 +66,7 @@ export let highestValue: number
 /** Highest species spawned */
 export let highestSpecies: PieceSpecies
 let ended: ExtendedBool
-let prng: IPrng32
+let prng: Mulberry32
 
 export const reset = (seed?: number) => {
     board = createBoard()
@@ -74,6 +83,60 @@ export const reset = (seed?: number) => {
 }
 
 reset()
+
+type IState = [
+    board: Board<Piece>,
+    xVacated: number,
+    yVacated: number,
+    xOccupied: number,
+    yOccupied: number,
+    xSpawned: number,
+    ySpawned: number,
+    highestValue: number,
+    highestSpecies: PieceSpecies,
+    seed: number,
+]
+
+export const takeState = (): IState => {
+    return [
+        copyBoard(board),
+        vacated?.x ?? Settings.outOfBounds,
+        vacated?.y ?? Settings.outOfBounds,
+        occupied?.x ?? Settings.outOfBounds,
+        occupied?.y ?? Settings.outOfBounds,
+        spawned?.x ?? Settings.outOfBounds,
+        spawned?.y ?? Settings.outOfBounds,
+        highestValue,
+        highestSpecies,
+        prng.state,
+    ]
+}
+
+export const restoreState = (state: IState) => {
+    const [
+        _board,
+        xVacated,
+        yVacated,
+        xOccupied,
+        yOccupied,
+        xSpawned,
+        ySpawned,
+        _highestValue,
+        _highestSpecies,
+        seed,
+    ] = state
+
+    reset(seed)
+
+    board = copyBoard(_board)
+
+    vacated = xVacated === Settings.outOfBounds ? null : { x: xVacated, y: yVacated }
+    occupied = xOccupied === Settings.outOfBounds ? null : { x: xOccupied, y: yOccupied }
+    spawned = xSpawned === Settings.outOfBounds ? null : { x: xSpawned, y: ySpawned }
+
+    highestValue = _highestValue
+    highestSpecies = _highestSpecies
+}
 
 const getRandomElement = <T>(array: T[]): Optional<T> => {
     switch (array.length) {
