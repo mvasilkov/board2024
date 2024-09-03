@@ -31,7 +31,13 @@ def replace_colors(svg: str) -> str:
         .replace('opacity=".2"', 'fill="${lowlight}" style="mix-blend-mode:darken"')
         .replace('fill="#010101" opacity=".25"', 'fill="${lowlight}" style="mix-blend-mode:darken"')
         .replace('opacity=".5"', 'fill="${_lowlight2}" style="mix-blend-mode:darken"')
-        .replace('stroke-width="1.5"', 'stroke-width="1.2"')
+        .replace('stroke-width="1.5"', 'stroke-width="1.3"')
+        # matrix(.91877 0 0 .93482 -3036.3 1998.5)
+        .replace('stroke-width="1.6185"', 'stroke-width="1.4027"')
+        # matrix(.98734 0 0 .96296 -3412.8 2056)
+        .replace('stroke-width="1.538"', 'stroke-width="1.3331"')
+        # matrix(.96234 0 0 .9617 -3133.3 2054.9)
+        .replace('stroke-width="1.559"', 'stroke-width="1.3513"')
     )
     return result
 

@@ -162,6 +162,10 @@ export const createPiece = (x: number, y: number, species: PieceSpecies, value: 
     const path = g.firstChild!
     const copy = path.cloneNode() as SVGPathElement
 
+    const thiccness = +copy.getAttribute('stroke-width')!
+    copy.setAttribute('stroke-width', '' + (4 * thiccness))
+    copy.setAttribute('stroke-linejoin', 'round')
+
     // copy.setAttribute('class', 'st')
     copy.classList.add('st')
     g.insertBefore(copy, path)
