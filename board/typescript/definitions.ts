@@ -395,7 +395,7 @@ export const playKing = () => {
             if (!piece) {
                 ++availableCells
             }
-            else if (piece.value === Settings.kingValue) {
+            else if (piece.species === PieceSpecies.king) {
                 x0 = x
                 y0 = y
             }
