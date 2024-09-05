@@ -9,10 +9,12 @@ import { createStyles } from './rendering.js'
 
 createStyles()
 
-// King
-board[3][0] = { species: PieceSpecies.king, value: Settings.kingValue }
+const begin = () => {
+    // King
+    board[3][0] = { species: PieceSpecies.king, value: Settings.kingValue }
 
-spawn()
-spawn()
+    spawn()
+    spawn()
 
-renderBoard(ShortBool.TRUE)
+    renderBoard(ShortBool.TRUE)
+}

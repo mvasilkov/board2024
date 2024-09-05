@@ -158,3 +158,37 @@ svg {
     transform: translateX(0);
   }
 }
+
+/* Beginning */
+.be {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: space-around;
+  justify-content: center;
+  align-self: center;
+  position: absolute;
+  width: 100vmin;
+  height: 100vmin;
+  z-index: 100;
+}
+
+/* Title */
+.ti {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  height: 16vmin;
+  width: 64vmin;
+}
+
+/* Button */
+.but {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  height: 16vmin;
+  width: 64vmin;
+}
