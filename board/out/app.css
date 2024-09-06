@@ -1,5 +1,9 @@
 @charset "utf-8";
 
+* {
+  cursor: default;
+}
+
 body {
   display: flex;
   flex-wrap: wrap;
@@ -171,6 +175,8 @@ svg {
   width: 100vmin;
   height: 100vmin;
   z-index: 100;
+  top: 0;
+  transition: top 0.4s;
 }
 
 /* Title */
@@ -179,8 +185,13 @@ svg {
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
-  height: 16vmin;
-  width: 64vmin;
+  height: 22vmin;
+  min-width: 64vmin;
+  font-size: 9vmin;
+  font-weight: 300;
+  background: #17001de0;
+  border-radius: 1.86vmin 1.86vmin 0 0;
+  color: #ef0c45;
 }
 
 /* Button */
@@ -190,5 +201,26 @@ svg {
   align-content: center;
   justify-content: center;
   height: 16vmin;
-  width: 64vmin;
+  min-width: 64vmin;
+  font-size: 7vmin;
+  font-weight: 300;
+  background: #17001dc0;
+  color: #fec070;
+}
+
+.but:not(:last-child) {
+  border-bottom: 0.5vmin solid #17001de0;
+}
+
+.but:last-child {
+  border-radius: 0 0 1.86vmin 1.86vmin;
+}
+
+.but:hover {
+  background: #270022c0;
+}
+
+/* Off-screen */
+.os {
+  top: -100vmin;
 }

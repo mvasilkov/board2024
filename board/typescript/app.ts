@@ -18,3 +18,5 @@ const begin = () => {
 
     renderBoard(ShortBool.TRUE)
 }
+
+begin()
