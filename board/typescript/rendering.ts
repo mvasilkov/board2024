@@ -283,4 +283,20 @@ export const createMenu = () => {
     menuButton.innerHTML = menuSVG
     musicButton.innerHTML = musicSVG
     undoButton.innerHTML = undoSVG
+
+    const menus = document.querySelectorAll('.u')
+    const mainMenu = menus[0]!
+
+    const menuButtons = mainMenu.querySelectorAll('.bu')
+    const continueButton = menuButtons[0]!
+    const newGameButton = menuButtons[1]!
+    const musicButton2 = menuButtons[2]!
+
+    menuButton.addEventListener('click', () => {
+        mainMenu.classList.toggle('h')
+    })
+
+    continueButton.addEventListener('click', () => {
+        mainMenu.classList.add('h')
+    })
 }
