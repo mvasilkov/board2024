@@ -3,6 +3,7 @@
 import type { ExtendedBool, ShortBool } from '../node_modules/natlib/prelude'
 
 import { board, getMovesTable, interact, kingOccupied, kingVacated, occupied, PieceSpecies, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
+import { menuSVG, musicSVG, undoSVG } from './icons.js'
 import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 
 const pieceColors = [
@@ -270,4 +271,16 @@ export const createStyles = () => {
     document.addEventListener('animationend', event => {
         (event.target as Element | null)?.classList.remove('an')
     })
+}
+
+export const createMenu = () => {
+    const buttons = document.querySelectorAll('.tb')
+
+    const menuButton = buttons[0]!
+    const musicButton = buttons[1]!
+    const undoButton = buttons[2]!
+
+    menuButton.innerHTML = menuSVG
+    musicButton.innerHTML = musicSVG
+    undoButton.innerHTML = undoSVG
 }
