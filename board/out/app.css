@@ -163,8 +163,8 @@ svg {
   }
 }
 
-/* Beginning */
-.be {
+/* Menu */
+.u {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -172,8 +172,8 @@ svg {
   justify-content: center;
   align-self: center;
   position: absolute;
-  width: 100vmin;
-  height: 100vmin;
+  width: 100vw;
+  height: 100vh;
   z-index: 100;
   top: 0;
   transition: top 0.4s;
@@ -195,7 +195,7 @@ svg {
 }
 
 /* Button */
-.but {
+.bu {
   display: flex;
   flex-wrap: wrap;
   align-content: center;
@@ -208,19 +208,19 @@ svg {
   color: #fec070;
 }
 
-.but:not(:last-child) {
+.bu:not(:last-child) {
   border-bottom: 0.5vmin solid #17001de0;
 }
 
-.but:last-child {
+.bu:last-child {
   border-radius: 0 0 1.86vmin 1.86vmin;
 }
 
-.but:hover {
+.bu:hover {
   background: #270022c0;
 }
 
-/* Off-screen */
-.os {
-  top: -100vmin;
+/* Hidden */
+.h {
+  top: -100vh;
 }
