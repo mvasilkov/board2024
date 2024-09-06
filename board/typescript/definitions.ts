@@ -82,7 +82,7 @@ export const reset = (seed?: number) => {
     prng = new Mulberry32(seed ?? Date.now())
 }
 
-reset()
+// reset()
 
 type IState = [
     board: Board<Piece>,

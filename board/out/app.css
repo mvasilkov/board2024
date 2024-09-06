@@ -175,16 +175,15 @@ svg {
   width: 100vw;
   height: 100vh;
   z-index: 10;
-  opacity: 1;
-  top: 0;
-  transition: opacity 0.4s ease-out, top 0.4s ease-out;
+  transition: opacity 0.25s cubic-bezier(0.5, 1, 0.89, 1), transform 0.25s cubic-bezier(0.5, 1, 0.89, 1);
 }
 
 /* Hidden */
 .h {
   opacity: 0;
-  top: -100vh;
-  transition: opacity 0.4s ease-in, top 0.4s ease-in;
+  pointer-events: none;
+  transform: translateY(-100vh);
+  transition: opacity 0.25s cubic-bezier(0.11, 0, 0.5, 0), transform 0.25s cubic-bezier(0.11, 0, 0.5, 0);
 }
 
 /* Title */
@@ -197,6 +196,8 @@ svg {
   min-width: 64vmin;
   font-size: 9vmin;
   font-weight: 300;
+  -webkit-backdrop-filter: blur(0.5vmin);
+  backdrop-filter: blur(0.5vmin);
   background: #17001de0;
   border-radius: 1.86vmin 1.86vmin 0 0;
   color: #ef0c45;
@@ -212,8 +213,16 @@ svg {
   min-width: 64vmin;
   font-size: 7vmin;
   font-weight: 300;
+  -webkit-backdrop-filter: blur(0.5vmin);
+  backdrop-filter: blur(0.5vmin);
   background: #17001dc0;
   color: #fec070;
+}
+
+.an .ti,
+.an .bu {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .bu:not(:last-child) {
@@ -234,14 +243,14 @@ svg {
   gap: 1vmin;
   padding: 0.5vmin;
   position: fixed;
-  right: 0;
   top: 0;
+  right: 0;
   z-index: 20;
 }
 
 @media (orientation: portrait) {
   .to {
-    flex-direction: row;
+    flex-direction: row-reverse;
   }
 }
 
@@ -257,6 +266,7 @@ svg {
   height: 6vmin;
   padding: 0.5vmin;
   border-radius: 8.3333%;
+  position: relative;
 }
 
 .tb:hover {
@@ -267,4 +277,20 @@ svg {
   width: 6vmin;
   height: 6vmin;
   color: #dbcfb1;
+}
+
+.of svg {
+  opacity: 0.4;
+}
+
+.of::after {
+  content: '';
+  position: absolute;
+  top: 2.5vmin;
+  left: 0.5vmin;
+  height: 0.4vmin;
+  width: 6vmin;
+  background: #dbcfb1;
+  border-radius: 0.5vmin;
+  opacity: 0.4;
 }

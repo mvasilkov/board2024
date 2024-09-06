@@ -1,8 +1,8 @@
 'use strict'
 
-import type { ExtendedBool, ShortBool } from '../node_modules/natlib/prelude'
+import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 
-import { board, getMovesTable, interact, kingOccupied, kingVacated, occupied, PieceSpecies, selected, setSpawned, Settings, spawned, vacated, type Board } from './definitions.js'
+import { board, getMovesTable, interact, kingOccupied, kingVacated, occupied, PieceSpecies, reset, selected, setSpawned, Settings, spawn, spawned, vacated, type Board } from './definitions.js'
 import { menuSVG, musicSVG, undoSVG } from './icons.js'
 import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 
@@ -273,6 +273,20 @@ export const createStyles = () => {
     })
 }
 
+export const begin = () => {
+    reset()
+
+    // King
+    board[3][0] = { species: PieceSpecies.king, value: Settings.kingValue }
+
+    spawn()
+    spawn()
+
+    renderBoard(ShortBool.TRUE)
+}
+
+let audioOn = true
+
 export const createMenu = () => {
     const buttons = document.querySelectorAll('.tb')
 
@@ -292,6 +306,8 @@ export const createMenu = () => {
     const newGameButton = menuButtons[1]!
     const musicButton2 = menuButtons[2]!
 
+    // Menu
+
     menuButton.addEventListener('click', () => {
         mainMenu.classList.toggle('h')
     })
@@ -299,4 +315,26 @@ export const createMenu = () => {
     continueButton.addEventListener('click', () => {
         mainMenu.classList.add('h')
     })
+
+    // New Game
+
+    newGameButton.addEventListener('click', () => {
+        mainMenu.classList.add('h')
+
+        begin()
+    })
+
+    // Music
+
+    const toggleAudio = () => {
+        audioOn = !audioOn
+
+        musicButton.classList.toggle('of', !audioOn)
+
+        musicButton2.textContent = audioOn ? 'MUSIC: ON' : 'MUSIC: OFF'
+    }
+
+    musicButton.addEventListener('click', toggleAudio)
+
+    musicButton2.addEventListener('click', toggleAudio)
 }
