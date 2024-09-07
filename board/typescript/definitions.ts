@@ -41,12 +41,18 @@ const createBoard = <T>(): Board<T> => {
     ]
 }
 
-const copyBoard = <T>(board: Board<T>): Board<T> => {
+const copyPiece = (piece: Optional<Piece>): Optional<Piece> => {
+    if (!piece) return
+    const { species, value } = piece
+    return { species, value }
+}
+
+const copyBoard = (board: Board<Piece>): Board<Piece> => {
     return [
-        board[0].slice() as BoardRow<T>,
-        board[1].slice() as BoardRow<T>,
-        board[2].slice() as BoardRow<T>,
-        board[3].slice() as BoardRow<T>,
+        Array.from(board[0], copyPiece) as BoardRow<Piece>,
+        Array.from(board[1], copyPiece) as BoardRow<Piece>,
+        Array.from(board[2], copyPiece) as BoardRow<Piece>,
+        Array.from(board[3], copyPiece) as BoardRow<Piece>,
     ]
 }
 
