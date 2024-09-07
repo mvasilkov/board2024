@@ -2,7 +2,7 @@
 
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 
-import { board, ended, getMovesTable, getPositionsWithMoves, getScore, highestValue, interact, kingOccupied, kingVacated, occupied, PieceSpecies, reset, selected, setSpawned, Settings, spawn, spawned, vacated, type Board } from './definitions.js'
+import { board, ended, getMovesTable, getPositionsWithMoves, getScore, highestValue, interact, kingOccupied, kingVacated, occupied, PieceSpecies, popState, pushInitialState, pushState, replaceStack, reset, restoreLastState, selected, setSpawned, Settings, spawn, spawned, stack, vacated, type Board } from './definitions.js'
 import { menuSVG, musicSVG, undoSVG } from './icons.js'
 import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 import { shareTwitter } from './share.js'
@@ -69,10 +69,15 @@ let suggestMoves: ReturnType<typeof getPositionsWithMoves> = []
 
 const bindClick = (cell: Element, x: number, y: number) => {
     cell.addEventListener('click', () => {
-        interact(x, y)
+        const changedBoard = interact(x, y)
         suggestMoves = getPositionsWithMoves()
 
         if (ended) ending()
+        else if (changedBoard) {
+            pushState()
+
+            localStorage.setItem('king13.stack', JSON.stringify(stack))
+        }
 
         renderBoard()
     })
@@ -306,6 +311,38 @@ export const begin = () => {
     spawn()
     spawn()
 
+    pushInitialState()
+
+    localStorage.removeItem('king13.stack')
+
+    renderBoard(ShortBool.TRUE)
+}
+
+export const beginSavedState = () => {
+    reset()
+
+    let loaded: ExtendedBool
+
+    const serialStack = localStorage.getItem('king13.stack')
+    if (serialStack) {
+        try {
+            const stack = JSON.parse(serialStack)
+            if (Array.isArray(stack)) {
+                replaceStack(stack)
+                loaded = ShortBool.TRUE
+            }
+        }
+        catch (_) {
+        }
+    }
+
+    if (!loaded) {
+        begin()
+        return
+    }
+
+    restoreLastState()
+
     renderBoard(ShortBool.TRUE)
 }
 
@@ -378,7 +415,13 @@ export const createMenu = () => {
     sideUndoButton.addEventListener('click', () => {
         if (ended) return
 
-        // FIXME undo
+        if (popState()) {
+            vacatedLast = vacated
+            spawnedLast = spawned
+            kingVacatedLast = kingVacated
+
+            localStorage.setItem('king13.stack', JSON.stringify(stack))
+        }
 
         renderBoard()
     })

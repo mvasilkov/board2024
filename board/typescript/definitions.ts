@@ -14,6 +14,8 @@ export const enum Settings {
     bishopThreshold = 4, // '16'
     rookThreshold = 6, // '64'
     queenThreshold = 8, // '256'
+    // Save state
+    stackSize = 4,
 }
 
 export const enum PieceSpecies {
@@ -104,7 +106,7 @@ type IState = [
     seed: number,
 ]
 
-export const takeState = (): IState => {
+const takeState = (): IState => {
     return [
         copyBoard(board),
         vacated?.x ?? Settings.outOfBounds,
@@ -124,7 +126,7 @@ export const takeState = (): IState => {
     ]
 }
 
-export const restoreState = (state: IState) => {
+const restoreState = (state: IState) => {
     const [
         _board,
         xVacated,
@@ -157,6 +159,37 @@ export const restoreState = (state: IState) => {
     highestSpecies = _highestSpecies
     score = _score
 }
+
+// #region Stack
+
+export let stack: IState[] = []
+
+export const replaceStack = (_stack: IState[]) => {
+    stack = _stack
+}
+
+export const pushInitialState = () => {
+    stack = [takeState()]
+}
+
+export const pushState = () => {
+    stack.push(takeState())
+    if (stack.length > Settings.stackSize) stack.shift()
+}
+
+export const restoreLastState = () => {
+    const lastState = stack.at(-1)
+    if (lastState) restoreState(lastState)
+}
+
+export const popState = (): ExtendedBool => {
+    if (stack.length < 2) return
+    stack.pop()
+    restoreLastState()
+    return ShortBool.TRUE
+}
+
+// #endregion
 
 const getRandomElement = <T>(array: T[]): Optional<T> => {
     switch (array.length) {
@@ -339,7 +372,9 @@ export const getPositionsWithMoves = (): ReadonlyVec2[] => {
     return positions
 }
 
-export const interact = (x: number, y: number) => {
+export const interact = (x: number, y: number): ExtendedBool => {
+    let changedBoard: ExtendedBool
+
     // Select
     if (!selected) {
         if (board[y]![x]) selected = { x, y }
@@ -363,6 +398,8 @@ export const interact = (x: number, y: number) => {
 
             playKing()
             spawn()
+
+            changedBoard = ShortBool.TRUE
         }
         else {
             // Move isn't possible, deselect instead
@@ -399,6 +436,8 @@ export const interact = (x: number, y: number) => {
                     spawn()
                 }
             }
+
+            changedBoard = ShortBool.TRUE
         }
         else {
             // Merge isn't possible, select instead
@@ -410,6 +449,8 @@ export const interact = (x: number, y: number) => {
     else if (board[y]![x]) {
         selected = { x, y }
     }
+
+    return changedBoard
 }
 
 const pieceWorth = (piece: Piece): number =>
