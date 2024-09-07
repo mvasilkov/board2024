@@ -65,7 +65,7 @@ export let kingOccupied: Optional<ReadonlyVec2>
 export let highestValue: number
 /** Highest species spawned */
 export let highestSpecies: PieceSpecies
-export let defeated: ExtendedBool
+export let ended: ExtendedBool
 let prng: Mulberry32
 
 export const reset = (seed?: number) => {
@@ -78,7 +78,7 @@ export const reset = (seed?: number) => {
     kingOccupied = null
     highestValue = 1
     highestSpecies = PieceSpecies.knight
-    defeated = ShortBool.FALSE
+    ended = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
 
@@ -175,7 +175,7 @@ export const spawn = () => {
     }
 
     if (!vacant.length) {
-        defeated = ShortBool.TRUE
+        ended = ShortBool.TRUE
         return
     }
 
@@ -327,7 +327,7 @@ export const getPositionsWithMoves = (): ReadonlyVec2[] => {
     }
 
     if (!positions.length) {
-        defeated = ShortBool.TRUE
+        ended = ShortBool.TRUE
     }
 
     return positions
@@ -377,6 +377,9 @@ export const interact = (x: number, y: number) => {
             selected = null
 
             if (value > highestValue) highestValue = value
+
+            // Regicide ending
+            if (value > Settings.kingValue) ended = ShortBool.TRUE
 
             const nextMove = getMoves(x, y).some(move => board[move.y]![move.x]?.value === value)
             if (nextMove) {
