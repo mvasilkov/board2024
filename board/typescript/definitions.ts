@@ -387,16 +387,17 @@ export const interact = (x: number, y: number) => {
 
             // Regicide ending
             if (value > Settings.kingValue) ended = ShortBool.TRUE
-
-            const nextMove = getMoves(x, y).some(move => board[move.y]![move.x]?.value === value)
-            if (nextMove) {
-                // The piece can continue the chain. Select it
-                // and don't spawn new pieces.
-                selected = { x, y }
-            }
             else {
-                playKing()
-                spawn()
+                const nextMove = getMoves(x, y).some(move => board[move.y]![move.x]?.value === value)
+                if (nextMove) {
+                    // The piece can continue the chain. Select it
+                    // and don't spawn new pieces.
+                    selected = { x, y }
+                }
+                else {
+                    playKing()
+                    spawn()
+                }
             }
         }
         else {
@@ -498,4 +499,20 @@ export const playKing = () => {
         kingVacated = { x: x0, y: y0 }
         kingOccupied = { x, y }
     }
+}
+
+export const getScore = (): number => {
+    let _score = score
+
+    for (let y = 0; y < Settings.boardHeight; ++y) {
+        for (let x = 0; x < Settings.boardWidth; ++x) {
+            const piece = board[y]![x]
+
+            if (!piece || piece.species === PieceSpecies.king || piece.value > Settings.kingValue) continue
+
+            _score -= 2 ** (piece.value - 1)
+        }
+    }
+
+    return _score
 }

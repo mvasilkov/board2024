@@ -2,7 +2,7 @@
 
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 
-import { board, ended, getMovesTable, getPositionsWithMoves, highestValue, interact, kingOccupied, kingVacated, occupied, PieceSpecies, reset, score, selected, setSpawned, Settings, spawn, spawned, vacated, type Board } from './definitions.js'
+import { board, ended, getMovesTable, getPositionsWithMoves, getScore, highestValue, interact, kingOccupied, kingVacated, occupied, PieceSpecies, reset, selected, setSpawned, Settings, spawn, spawned, vacated, type Board } from './definitions.js'
 import { menuSVG, musicSVG, undoSVG } from './icons.js'
 import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 import { shareTwitter } from './share.js'
@@ -386,7 +386,7 @@ export const createMenu = () => {
     // Share
 
     endingShareButton.addEventListener('click', () => {
-        shareTwitter(highestValue > Settings.kingValue ? 'SUCCESS' : 'DEFEAT', score)
+        shareTwitter(highestValue > Settings.kingValue ? 'SUCCESS' : 'DEFEAT', getScore())
     })
 }
 
@@ -397,8 +397,8 @@ const ending = () => {
     const title = endingMenu.querySelector('.ti')!
     title.textContent = highestValue > Settings.kingValue ? 'SUCCESS' : 'DEFEAT'
 
-    const _score = endingMenu.querySelector('.sc')!
-    _score.textContent = 'Score: ' + score
+    const score = endingMenu.querySelector('.sc')!
+    score.textContent = 'Score: ' + getScore()
 
     endingMenu.classList.remove('h')
 }
