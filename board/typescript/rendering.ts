@@ -311,49 +311,49 @@ export const begin = () => {
 let audioOn = true
 
 export const createMenu = () => {
-    const buttons = document.querySelectorAll('.tb')
+    const sideButtons = document.querySelectorAll('.tb')
+    const sideMenuButton = sideButtons[0]!
+    const sideMusicButton = sideButtons[1]!
+    const sideUndoButton = sideButtons[2]!
 
-    const menuButton = buttons[0]!
-    const musicButton = buttons[1]!
-    const undoButton = buttons[2]!
-
-    menuButton.innerHTML = menuSVG
-    musicButton.innerHTML = musicSVG
-    undoButton.innerHTML = undoSVG
+    sideMenuButton.innerHTML = menuSVG
+    sideMusicButton.innerHTML = musicSVG
+    sideUndoButton.innerHTML = undoSVG
 
     const menus = document.querySelectorAll('.u')
-    const mainMenu = menus[0]!
+    const defaultMenu = menus[0]!
     const endingMenu = menus[1]!
 
-    const menuButtons = mainMenu.querySelectorAll('.bu')
-    const continueButton = menuButtons[0]!
-    const newGameButton = menuButtons[1]!
-    const musicButton2 = menuButtons[2]!
+    const defaultMenuButtons = defaultMenu.querySelectorAll('.bu')
+    const defaultContinueButton = defaultMenuButtons[0]!
+    const defaultNewGameButton = defaultMenuButtons[1]!
+    const defaultMusicButton = defaultMenuButtons[2]!
 
-    const menuButtons2 = endingMenu.querySelectorAll('.bu')
-    const shareButton = menuButtons2[0]!
-    const newGameButton2 = menuButtons2[1]!
+    const endingMenuButtons = endingMenu.querySelectorAll('.bu')
+    const endingShareButton = endingMenuButtons[0]!
+    const endingNewGameButton = endingMenuButtons[1]!
 
     // Menu
 
-    menuButton.addEventListener('click', () => {
+    sideMenuButton.addEventListener('click', () => {
         if (ended) return
-        mainMenu.classList.toggle('h')
+
+        defaultMenu.classList.toggle('h')
     })
 
-    continueButton.addEventListener('click', () => {
-        mainMenu.classList.add('h')
+    defaultContinueButton.addEventListener('click', () => {
+        defaultMenu.classList.add('h')
     })
 
     // New Game
 
-    newGameButton.addEventListener('click', () => {
-        mainMenu.classList.add('h')
+    defaultNewGameButton.addEventListener('click', () => {
+        defaultMenu.classList.add('h')
 
         begin()
     })
 
-    newGameButton2.addEventListener('click', () => {
+    endingNewGameButton.addEventListener('click', () => {
         endingMenu.classList.add('h')
 
         begin()
@@ -364,14 +364,29 @@ export const createMenu = () => {
     const toggleAudio = () => {
         audioOn = !audioOn
 
-        musicButton.classList.toggle('of', !audioOn)
+        sideMusicButton.classList.toggle('of', !audioOn)
 
-        musicButton2.textContent = audioOn ? 'MUSIC: ON' : 'MUSIC: OFF'
+        defaultMusicButton.textContent = audioOn ? 'MUSIC: ON' : 'MUSIC: OFF'
     }
 
-    musicButton.addEventListener('click', toggleAudio)
+    sideMusicButton.addEventListener('click', toggleAudio)
+    defaultMusicButton.addEventListener('click', toggleAudio)
 
-    musicButton2.addEventListener('click', toggleAudio)
+    // Undo
+
+    sideUndoButton.addEventListener('click', () => {
+        if (ended) return
+
+        // FIXME undo
+
+        renderBoard()
+    })
+
+    // Share
+
+    endingShareButton.addEventListener('click', () => {
+        // FIXME share
+    })
 }
 
 const ending = () => {
@@ -382,7 +397,6 @@ const ending = () => {
     title.textContent = highestValue > Settings.kingValue ? 'SUCCESS' : 'DEFEAT'
 
     // FIXME score
-    // FIXME twitter
 
     endingMenu.classList.remove('h')
 }
