@@ -203,6 +203,12 @@ svg {
   color: #ef0c45;
 }
 
+.ti+.ti {
+  height: 16vmin;
+  font-size: 7vmin;
+  border-radius: 0;
+}
+
 /* Button */
 .bu {
   display: flex;

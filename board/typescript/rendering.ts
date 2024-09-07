@@ -2,7 +2,7 @@
 
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 
-import { board, getMovesTable, interact, kingOccupied, kingVacated, occupied, PieceSpecies, reset, selected, setSpawned, Settings, spawn, spawned, vacated, type Board } from './definitions.js'
+import { board, defeated, getMovesTable, getPositionsWithMoves, interact, kingOccupied, kingVacated, occupied, PieceSpecies, reset, selected, setSpawned, Settings, spawn, spawned, vacated, type Board } from './definitions.js'
 import { menuSVG, musicSVG, undoSVG } from './icons.js'
 import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 
@@ -64,9 +64,15 @@ export const getColors = (value: number): PieceColors => {
     return [color, outline, highlight, lowlight, lowlight2]
 }
 
+let suggestMoves: ReturnType<typeof getPositionsWithMoves> = []
+
 const bindClick = (cell: Element, x: number, y: number) => {
     cell.addEventListener('click', () => {
         interact(x, y)
+        suggestMoves = getPositionsWithMoves()
+
+        if (defeated) defeat()
+
         renderBoard()
     })
 }
@@ -276,6 +282,22 @@ export const createStyles = () => {
 export const begin = () => {
     reset()
 
+    // Defeat
+    // board[0][0] = { species: PieceSpecies.knight, value: 2 }
+    // board[0][1] = { species: PieceSpecies.knight, value: 2 }
+    // board[0][2] = { species: PieceSpecies.knight, value: 2 }
+    // board[0][3] = { species: PieceSpecies.knight, value: 2 }
+    // board[1][0] = { species: PieceSpecies.bishop, value: 3 }
+    // board[1][1] = { species: PieceSpecies.bishop, value: 3 }
+    // board[1][2] = { species: PieceSpecies.bishop, value: 3 }
+    // board[1][3] = { species: PieceSpecies.bishop, value: 3 }
+    // board[2][0] = { species: PieceSpecies.knight, value: 4 }
+    // board[2][1] = { species: PieceSpecies.knight, value: 4 }
+    // board[2][2] = { species: PieceSpecies.knight, value: 4 }
+    // board[2][3] = { species: PieceSpecies.knight, value: 4 }
+    // board[3][1] = { species: PieceSpecies.rook, value: 5 }
+    // board[3][2] = { species: PieceSpecies.rook, value: 5 }
+
     // King
     board[3][0] = { species: PieceSpecies.king, value: Settings.kingValue }
 
@@ -300,15 +322,21 @@ export const createMenu = () => {
 
     const menus = document.querySelectorAll('.u')
     const mainMenu = menus[0]!
+    const defeatMenu = menus[1]!
 
     const menuButtons = mainMenu.querySelectorAll('.bu')
     const continueButton = menuButtons[0]!
     const newGameButton = menuButtons[1]!
     const musicButton2 = menuButtons[2]!
 
+    const menuButtons2 = defeatMenu.querySelectorAll('.bu')
+    const shareButton = menuButtons2[0]!
+    const newGameButton2 = menuButtons2[1]!
+
     // Menu
 
     menuButton.addEventListener('click', () => {
+        if (defeated) return
         mainMenu.classList.toggle('h')
     })
 
@@ -320,6 +348,12 @@ export const createMenu = () => {
 
     newGameButton.addEventListener('click', () => {
         mainMenu.classList.add('h')
+
+        begin()
+    })
+
+    newGameButton2.addEventListener('click', () => {
+        defeatMenu.classList.add('h')
 
         begin()
     })
@@ -337,4 +371,11 @@ export const createMenu = () => {
     musicButton.addEventListener('click', toggleAudio)
 
     musicButton2.addEventListener('click', toggleAudio)
+}
+
+const defeat = () => {
+    const menus = document.querySelectorAll('.u')
+    const defeatMenu = menus[1]!
+
+    defeatMenu.classList.remove('h')
 }
