@@ -186,6 +186,12 @@ svg {
   transition: opacity 0.25s cubic-bezier(0.11, 0, 0.5, 0), transform 0.25s cubic-bezier(0.11, 0, 0.5, 0);
 }
 
+@media (orientation: portrait) {
+  .h {
+    transform: translateX(-100vw);
+  }
+}
+
 /* Title */
 .ti {
   display: flex;
@@ -203,7 +209,7 @@ svg {
   color: #ef0c45;
 }
 
-.ti+.ti {
+.sc {
   height: 16vmin;
   font-size: 7vmin;
   border-radius: 0;
@@ -276,7 +282,7 @@ svg {
 }
 
 .tb:hover {
-  background: #00000040;
+  background: #00000020;
 }
 
 .tb svg {

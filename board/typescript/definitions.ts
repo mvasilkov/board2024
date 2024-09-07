@@ -65,6 +65,7 @@ export let kingOccupied: Optional<ReadonlyVec2>
 export let highestValue: number
 /** Highest species spawned */
 export let highestSpecies: PieceSpecies
+export let score: number
 export let ended: ExtendedBool
 let prng: Mulberry32
 
@@ -78,6 +79,7 @@ export const reset = (seed?: number) => {
     kingOccupied = null
     highestValue = 1
     highestSpecies = PieceSpecies.knight
+    score = 0
     ended = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
@@ -98,6 +100,7 @@ type IState = [
     yKingOccupied: number,
     highestValue: number,
     highestSpecies: PieceSpecies,
+    score: number,
     seed: number,
 ]
 
@@ -116,6 +119,7 @@ export const takeState = (): IState => {
         kingOccupied?.y ?? Settings.outOfBounds,
         highestValue,
         highestSpecies,
+        score,
         prng.state,
     ]
 }
@@ -135,6 +139,7 @@ export const restoreState = (state: IState) => {
         yKingOccupied,
         _highestValue,
         _highestSpecies,
+        _score,
         seed,
     ] = state
 
@@ -150,6 +155,7 @@ export const restoreState = (state: IState) => {
 
     highestValue = _highestValue
     highestSpecies = _highestSpecies
+    score = _score
 }
 
 const getRandomElement = <T>(array: T[]): Optional<T> => {
@@ -370,6 +376,7 @@ export const interact = (x: number, y: number) => {
 
         if (moves[y]![x]) {
             board[y]![x] = board[selected.y]![selected.x]! // Copy species
+            score += 2 ** board[y]![x].value
             const value = ++board[y]![x].value
             board[selected.y]![selected.x] = null
             vacated = selected
@@ -477,6 +484,7 @@ export const playKing = () => {
 
         if (selected && selected.x === x && selected.y === y) selected = null
 
+        score -= 2 ** board[y]![x]!.value
         board[y]![x] = board[y0]![x0]
         board[y0]![x0] = null
         kingVacated = { x: x0, y: y0 }
