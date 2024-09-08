@@ -346,6 +346,10 @@ export const beginSavedState = () => {
 
     restoreLastState()
 
+    vacatedLast = vacated
+    // spawnedLast = spawned
+    kingVacatedLast = kingVacated
+
     renderBoard(ShortBool.TRUE)
 }
 
@@ -420,13 +424,13 @@ export const createMenu = () => {
 
         if (popState()) {
             vacatedLast = vacated
-            spawnedLast = spawned
+            // spawnedLast = spawned
             kingVacatedLast = kingVacated
+
+            renderBoard(ShortBool.TRUE)
 
             localStorage.setItem('king13.stack', JSON.stringify(stack))
         }
-
-        renderBoard()
     })
 
     // Share
