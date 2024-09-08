@@ -183,18 +183,20 @@ export const createPiece = (x: number, y: number, species: PieceSpecies, value: 
     copy.classList.add('st')
     g.insertBefore(copy, path)
 
-    if (species === PieceSpecies.king) {
-        return piece
-    }
-
     // Value
     const val = document.createElement('div')
 
     // val.className = `n n${value}`
     val.className = 'n'
-    val.textContent = '' + 2 ** value
-    val.style.backgroundColor = colors[1] + '90'
-    val.style.color = colors[2]
+    if (species === PieceSpecies.king) {
+        val.textContent = 'XIII'
+        val.style.color = colors[4]
+    }
+    else {
+        val.textContent = '' + 2 ** value
+        val.style.backgroundColor = colors[1] + '90'
+        val.style.color = colors[2]
+    }
 
     piece.append(val)
 

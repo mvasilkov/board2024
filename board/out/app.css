@@ -106,6 +106,21 @@ svg {
   z-index: 4;
 }
 
+/* King value */
+.p.ps5 {
+  align-content: center;
+}
+
+.p.ps5 .n {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  font-family: Georgia, 'Noto Serif', serif;
+  font-size: 4vmin;
+  letter-spacing: -0.1vmin;
+  position: relative;
+  top: 1.6vmin;
+}
+
 /* Selected */
 .st {
   fill: none;
@@ -117,7 +132,7 @@ svg {
 }
 
 /* Selected king */
-.s .p.ps5 svg {
+.s .p.ps5 {
   animation: 0.5s ease-in-out no;
 }
 
