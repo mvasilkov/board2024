@@ -191,6 +191,7 @@ export const createPiece = (x: number, y: number, species: PieceSpecies, value: 
     if (species === PieceSpecies.king) {
         val.textContent = 'XIII'
         val.style.color = colors[4]
+        // val.style.textShadow = `.1vmin .1vmin ${colors[2]}`
     }
     else {
         val.textContent = '' + 2 ** value

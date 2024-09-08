@@ -131,6 +131,14 @@ svg {
   stroke: #f4f4f4;
 }
 
+.s .p svg {
+  animation: 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate se;
+}
+
+.s .p .n {
+  z-index: 4;
+}
+
 /* Selected king */
 .s .p.ps5 {
   animation: 0.5s ease-in-out no;
@@ -138,6 +146,10 @@ svg {
 
 .s .p.ps5 .st {
   stroke: none;
+}
+
+.s .p.ps5 svg {
+  animation: none;
 }
 
 /* Spawn */
@@ -148,6 +160,17 @@ svg {
 
   100% {
     transform: scale(1);
+  }
+}
+
+/* Selected */
+@keyframes se {
+  0% {
+    transform: translateY(0.5vmin);
+  }
+
+  100% {
+    transform: translateY(-0.5vmin);
   }
 }
 
