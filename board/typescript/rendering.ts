@@ -5,7 +5,7 @@
 'use strict'
 
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
-import { toggleAudio } from './audio/audio.js'
+import { sound, SoundEffect, step, toggleAudio } from './audio/audio.js'
 
 import { board, ended, getMovesTable, getPositionsWithMoves, getScore, highestValue, interact, kingAttack, kingOccupied, kingVacated, occupied, PieceSpecies, popState, pushInitialState, pushState, replaceStack, reset, restoreLastState, selected, setSpawned, Settings, spawn, spawned, stack, vacated, type Board } from './definitions.js'
 import { menuSVG, musicSVG, undoSVG } from './icons.js'
@@ -410,10 +410,14 @@ export const createMenu = () => {
         if (ended) return
 
         defaultMenu.classList.toggle('h')
+
+        step()
     })
 
     defaultContinueButton.addEventListener('click', () => {
         defaultMenu.classList.add('h')
+
+        step()
     })
 
     // New Game
@@ -422,12 +426,16 @@ export const createMenu = () => {
         defaultMenu.classList.add('h')
 
         begin()
+
+        sound(SoundEffect.BUTTON_CLICK)
     })
 
     endingNewGameButton.addEventListener('click', () => {
         endingMenu.classList.add('h')
 
         begin()
+
+        sound(SoundEffect.BUTTON_CLICK)
     })
 
     // Music
@@ -458,6 +466,8 @@ export const createMenu = () => {
             renderBoard(ShortBool.TRUE)
 
             localStorage.setItem('king13.stack', JSON.stringify(stack))
+
+            sound(SoundEffect.BUTTON_CLICK)
         }
     })
 
@@ -465,6 +475,8 @@ export const createMenu = () => {
 
     endingShareButton.addEventListener('click', () => {
         shareTwitter(highestValue > Settings.kingValue ? 'SUCCESS' : 'DEFEAT', getScore())
+
+        step()
     })
 }
 

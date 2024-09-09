@@ -9,6 +9,7 @@ import { AudioHandle } from '../../node_modules/natlib/audio/AudioHandle.js'
 import type { ExtendedBool } from '../../node_modules/natlib/prelude'
 import { Mulberry32 } from '../../node_modules/natlib/prng/Mulberry32.js'
 import { randomUint32LessThan } from '../../node_modules/natlib/prng/prng.js'
+
 import { ImpulseResponse } from './ImpulseResponse.js'
 import { play } from './song.js'
 
@@ -19,10 +20,12 @@ export const audioHandle = new AudioHandle
 const prng = new Mulberry32(9)
 
 let audioOut: GainNode
+let audioOutEffects: GainNode
 let songStart: number
 
 export const initializeAudio = (con: AudioContext) => {
     audioOut = new GainNode(con, { gain: 0.3333 })
+    audioOutEffects = new GainNode(con, { gain: 0.3333 })
 
     // Reverb
     const convolver = new ConvolverNode(con)
@@ -31,6 +34,8 @@ export const initializeAudio = (con: AudioContext) => {
 
     audioOut.connect(convolver)
     audioOut.connect(reverbDry)
+    audioOutEffects.connect(convolver)
+    audioOutEffects.connect(reverbDry)
     convolver.connect(reverbWet)
     reverbDry.connect(con.destination)
     reverbWet.connect(con.destination)
@@ -100,7 +105,7 @@ export const enum SoundEffect {
 }
 
 export function sound(effect: SoundEffect) {
-    if (!audioOut) return
+    if (!audioOutEffects) return
 
     switch (effect) {
         case SoundEffect.BUTTON_CLICK:
@@ -148,7 +153,7 @@ function playNote2(n: number, start: number, duration: number) {
         frequency: convertMidiToFrequency(n),
     })
     // decay(osc, start).connect(audioOut)
-    osc.connect(audioOut)
+    osc.connect(audioOutEffects)
     osc.start(start)
     osc.stop(start + duration)
 }
@@ -157,7 +162,7 @@ function playNote2(n: number, start: number, duration: number) {
 const stepNotes = [35, 36, 38, 39, 40, 42, 43, 45]
 
 export function step() {
-    if (!audioOut) return
+    if (!audioOutEffects) return
 
     const con = audioHandle.con!
 
@@ -172,7 +177,7 @@ export function step() {
     const gain = new GainNode(con)
 
     osc.connect(gain)
-    gain.connect(audioOut)
+    gain.connect(audioOutEffects)
 
     osc.frequency.setValueAtTime(frequency, start)
     gain.gain.setValueAtTime(1, start)
