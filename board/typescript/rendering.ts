@@ -404,6 +404,14 @@ export const createMenu = () => {
     const endingShareButton = endingMenuButtons[0]!
     const endingNewGameButton = endingMenuButtons[1]!
 
+    // Saved audio state
+    const mute = localStorage.getItem('king13.mute') === '1'
+    if (mute) {
+        audioOn = false
+        sideMusicButton.classList.add('of')
+        defaultMusicButton.textContent = 'MUSIC: OFF'
+    }
+
     // Menu
 
     sideMenuButton.addEventListener('click', () => {
@@ -448,6 +456,8 @@ export const createMenu = () => {
         sideMusicButton.classList.toggle('of', !audioOn)
 
         defaultMusicButton.textContent = audioOn ? 'MUSIC: ON' : 'MUSIC: OFF'
+
+        localStorage.setItem('king13.mute', audioOn ? '0' : '1')
     }
 
     sideMusicButton.addEventListener('click', _toggleAudio)

@@ -24,7 +24,9 @@ let audioOutEffects: GainNode
 let songStart: number
 
 export const initializeAudio = (con: AudioContext) => {
-    audioOut = new GainNode(con, { gain: 0.3333 })
+    const mute = localStorage.getItem('king13.mute') === '1'
+
+    audioOut = new GainNode(con, { gain: mute ? 0 : 0.3333 })
     audioOutEffects = new GainNode(con, { gain: 0.3333 })
 
     // Reverb
