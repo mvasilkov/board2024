@@ -2,6 +2,15 @@
 
 * {
   cursor: default;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 body {
@@ -282,6 +291,7 @@ svg {
   height: 16vmin;
   font-size: 7vmin;
   border-radius: 0;
+  user-select: text;
 }
 
 /* Button */

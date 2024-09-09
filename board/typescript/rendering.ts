@@ -66,12 +66,12 @@ export const getColors = (value: number): PieceColors => {
 }
 
 const boardRef = document.querySelector('.b')! as HTMLElement
-let suggestMoves: ReturnType<typeof getPositionsWithMoves> = []
+// let suggestMoves: ReturnType<typeof getPositionsWithMoves> = []
 
 const bindClick = (cell: Element, x: number, y: number) => {
     cell.addEventListener('click', () => {
         const changedBoard = interact(x, y)
-        suggestMoves = getPositionsWithMoves()
+        getPositionsWithMoves()
 
         if (ended) ending()
         else if (changedBoard) {
