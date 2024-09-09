@@ -5,6 +5,7 @@
 'use strict'
 
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
+import { toggleAudio } from './audio/audio.js'
 
 import { board, ended, getMovesTable, getPositionsWithMoves, getScore, highestValue, interact, kingAttack, kingOccupied, kingVacated, occupied, PieceSpecies, popState, pushInitialState, pushState, replaceStack, reset, restoreLastState, selected, setSpawned, Settings, spawn, spawned, stack, vacated, type Board } from './definitions.js'
 import { menuSVG, musicSVG, undoSVG } from './icons.js'
@@ -431,16 +432,18 @@ export const createMenu = () => {
 
     // Music
 
-    const toggleAudio = () => {
+    const _toggleAudio = () => {
         audioOn = !audioOn
+
+        toggleAudio(!audioOn)
 
         sideMusicButton.classList.toggle('of', !audioOn)
 
         defaultMusicButton.textContent = audioOn ? 'MUSIC: ON' : 'MUSIC: OFF'
     }
 
-    sideMusicButton.addEventListener('click', toggleAudio)
-    defaultMusicButton.addEventListener('click', toggleAudio)
+    sideMusicButton.addEventListener('click', _toggleAudio)
+    defaultMusicButton.addEventListener('click', _toggleAudio)
 
     // Undo
 

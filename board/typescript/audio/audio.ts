@@ -16,12 +16,12 @@ const TEMPO_MUL = 120 / 70
 
 export const audioHandle = new AudioHandle
 
-const prng = new Mulberry32(999)
+const prng = new Mulberry32(9)
 
 let audioOut: GainNode
 let songStart: number
 
-export const initializeAudio = (startMusic: ExtendedBool) => (con: AudioContext) => {
+export const initializeAudio = (con: AudioContext) => {
     audioOut = new GainNode(con, { gain: 0.3333 })
 
     // Reverb
@@ -38,11 +38,6 @@ export const initializeAudio = (startMusic: ExtendedBool) => (con: AudioContext)
     const ir = new ImpulseResponse(2, con.sampleRate, prng)
     ir.generateReverb(buf => {
         convolver.buffer = buf
-
-        if (!startMusic) {
-            sound(SoundEffect.BUTTON_CLICK)
-            return
-        }
 
         songStart = con.currentTime + 0.05
 
