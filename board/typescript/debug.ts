@@ -1,3 +1,7 @@
+/** This file is part of King Thirteen.
+ * https://github.com/mvasilkov/board2024
+ * @license Proprietary | Copyright (c) 2024 Mark Vasilkov
+ */
 'use strict'
 
 import { PieceSpecies, Settings } from './definitions.js'
