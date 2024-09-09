@@ -2,7 +2,7 @@
 
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 
-import { board, ended, getMovesTable, getPositionsWithMoves, getScore, highestValue, interact, kingOccupied, kingVacated, occupied, PieceSpecies, popState, pushInitialState, pushState, replaceStack, reset, restoreLastState, selected, setSpawned, Settings, spawn, spawned, stack, vacated, type Board } from './definitions.js'
+import { board, ended, getMovesTable, getPositionsWithMoves, getScore, highestValue, interact, kingAttack, kingOccupied, kingVacated, occupied, PieceSpecies, popState, pushInitialState, pushState, replaceStack, reset, restoreLastState, selected, setSpawned, Settings, spawn, spawned, stack, vacated, type Board } from './definitions.js'
 import { menuSVG, musicSVG, undoSVG } from './icons.js'
 import { bishopSVG, kingSVG, knightSVG, queenSVG, rookSVG } from './pieces.js'
 import { shareTwitter } from './share.js'
@@ -65,6 +65,7 @@ export const getColors = (value: number): PieceColors => {
     return [color, outline, highlight, lowlight, lowlight2]
 }
 
+const boardRef = document.querySelector('.b')! as HTMLElement
 let suggestMoves: ReturnType<typeof getPositionsWithMoves> = []
 
 const bindClick = (cell: Element, x: number, y: number) => {
@@ -78,6 +79,8 @@ const bindClick = (cell: Element, x: number, y: number) => {
 
             localStorage.setItem('king13.stack', JSON.stringify(stack))
         }
+
+        boardRef.classList.remove('sh')
 
         renderBoard()
     })
@@ -168,6 +171,10 @@ export const createPiece = (x: number, y: number, species: PieceSpecies, value: 
         // easeOutQuad
         piece.style.animation = `.2s cubic-bezier(.5,1,.89,1) t${kingVacated.x}${kingVacated.y}${x}${y}`
         kingVacatedLast = kingVacated
+
+        if (kingAttack) {
+            boardRef.classList.add('sh')
+        }
     }
 
     // Outline
@@ -307,6 +314,20 @@ export const begin = () => {
     // board[2][1] = { species: PieceSpecies.knight, value: 4 }
     // board[2][2] = { species: PieceSpecies.knight, value: 4 }
     // board[2][3] = { species: PieceSpecies.knight, value: 4 }
+
+    // Screen shake
+    // board[0][0] = { species: PieceSpecies.rook, value: 1 }
+    // board[1][0] = { species: PieceSpecies.knight, value: 1 }
+    // board[1][1] = { species: PieceSpecies.knight, value: 1 }
+    // board[1][2] = { species: PieceSpecies.knight, value: 1 }
+    // board[1][3] = { species: PieceSpecies.knight, value: 1 }
+    // board[2][0] = { species: PieceSpecies.knight, value: 1 }
+    // board[2][1] = { species: PieceSpecies.knight, value: 1 }
+    // board[2][2] = { species: PieceSpecies.knight, value: 1 }
+    // board[2][3] = { species: PieceSpecies.knight, value: 1 }
+    // board[3][1] = { species: PieceSpecies.knight, value: 1 }
+    // board[3][2] = { species: PieceSpecies.knight, value: 1 }
+    // board[3][3] = { species: PieceSpecies.knight, value: 1 }
 
     // King
     board[3][0] = { species: PieceSpecies.king, value: Settings.kingValue }

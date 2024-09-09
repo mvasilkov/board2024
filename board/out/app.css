@@ -201,6 +201,37 @@ svg {
   }
 }
 
+/* Screen shake */
+.sh {
+  animation: 0.2s ease-in-out 0.1s sha;
+}
+
+@keyframes sha {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(1.2vmin, -0.4vmin);
+  }
+
+  40% {
+    transform: translate(-0.6vmin, 0.2vmin);
+  }
+
+  60% {
+    transform: translate(0.6vmin, -0.2vmin);
+  }
+
+  80% {
+    transform: translate(-0.3vmin, 0.1vmin);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
 /* Menu */
 .u {
   display: flex;

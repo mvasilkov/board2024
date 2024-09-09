@@ -75,6 +75,7 @@ export let highestValue: number
 export let highestSpecies: PieceSpecies
 export let score: number
 export let ended: ExtendedBool
+export let kingAttack: ExtendedBool
 let prng: Mulberry32
 
 export const reset = (seed?: number) => {
@@ -89,6 +90,7 @@ export const reset = (seed?: number) => {
     highestSpecies = PieceSpecies.knight
     score = 0
     ended = ShortBool.FALSE
+    kingAttack = ShortBool.FALSE
     prng = new Mulberry32(seed ?? Date.now())
 }
 
@@ -537,6 +539,7 @@ export const playKing = () => {
         board[y0]![x0] = null
         kingVacated = { x: x0, y: y0 }
         kingOccupied = { x, y }
+        kingAttack = ShortBool.TRUE
     }
     else if (possibleMoves.length) {
         const { x, y } = getRandomElement(possibleMoves)!
@@ -545,6 +548,7 @@ export const playKing = () => {
         board[y0]![x0] = null
         kingVacated = { x: x0, y: y0 }
         kingOccupied = { x, y }
+        kingAttack = ShortBool.FALSE
     }
 }
 
