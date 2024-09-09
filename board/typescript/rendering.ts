@@ -491,4 +491,6 @@ const ending = () => {
     score.textContent = 'Score: ' + getScore()
 
     endingMenu.classList.remove('h')
+
+    sound(highestValue > Settings.kingValue ? SoundEffect.WIN : SoundEffect.DISCONNECT)
 }

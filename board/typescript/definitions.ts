@@ -8,6 +8,7 @@ import type { IVec2 } from '../node_modules/natlib/Vec2'
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { Mulberry32 } from '../node_modules/natlib/prng/Mulberry32.js'
 import { randomUint32LessThan } from '../node_modules/natlib/prng/prng.js'
+import { sound, SoundEffect, step } from './audio/audio.js'
 
 export const enum Settings {
     boardWidth = 4,
@@ -412,6 +413,13 @@ export const interact = (x: number, y: number): ExtendedBool => {
             spawn()
 
             changedBoard = ShortBool.TRUE
+
+            if (kingAttack) {
+                sound(SoundEffect.DISCONNECT)
+            }
+            else {
+                step()
+            }
         }
         else {
             // Move isn't possible, deselect instead
@@ -450,6 +458,15 @@ export const interact = (x: number, y: number): ExtendedBool => {
             }
 
             changedBoard = ShortBool.TRUE
+
+            if (!ended) {
+                if (kingAttack) {
+                    sound(SoundEffect.DISCONNECT)
+                }
+                else {
+                    sound(SoundEffect.CONNECT)
+                }
+            }
         }
         else {
             // Merge isn't possible, select instead
