@@ -9,3 +9,11 @@ Clad in blood-red armor, Godric towered over them, an enormous and imposing figu
 — *I am fear incarnate!* — his roar echoed through the hall. — *You will bow before me, or you will burn!*
 
 Soon after, swords were drawn, and scarlet splattered the floor.
+
+---
+
+**How to play:**
+
+* Join forces
+* Claim the throne
+* Revel in glory
