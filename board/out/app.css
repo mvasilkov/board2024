@@ -89,7 +89,7 @@ body {
   z-index: 1;
 }
 
-.an {
+.p.an {
   z-index: 3;
 }
 
@@ -109,7 +109,7 @@ svg {
   z-index: 2;
 }
 
-.an .n {
+.p.an .n {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   z-index: 4;
@@ -140,12 +140,8 @@ svg {
   stroke: #f4f4f4;
 }
 
-.s .p svg {
+.s .p:not(.an) svg {
   animation: 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate se;
-}
-
-.s .p .n {
-  z-index: 4;
 }
 
 /* Selected king */
