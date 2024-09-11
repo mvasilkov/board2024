@@ -1,3 +1,7 @@
+# King Thirteen
+
+<img src="https://raw.githubusercontent.com/mvasilkov/board2024/master/pictures/crimson_crown.png" height="480" width="480">
+
 King Godric XIII, called the Crimson Hand, the Withering Flame, the dreaded King Thirteen rose from his throne.
 
 The whispers of his subjects had grown too loud, too bold. They had forgotten their place.
